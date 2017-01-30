@@ -34,7 +34,7 @@ public class Main {
         T = Integer.parseInt(st.nextToken());
         System.out.println(solve(0, N - 1));
         long endTime = System.currentTimeMillis();
-        System.out.println(endTime - startTime);
+        System.out.println(endTime - startTime + " ms");
     }
 
     public static int solve(int s, int e) {
