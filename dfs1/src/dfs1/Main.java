@@ -17,6 +17,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
+        long startTime = System.currentTimeMillis();
 
         InputStreamReader isr = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(isr);
@@ -45,6 +46,8 @@ public class Main {
                 System.out.println(CNT_LIST[i]);
             }
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println(endTime - startTime + " ms");
     }
 
     public static void solve() {
