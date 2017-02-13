@@ -58,7 +58,6 @@ public class Main {
                     dfs(i, j);
                     CNT_LIST[MARK] = CNT;
                     MARK++;
-
                 }
             }
         }
