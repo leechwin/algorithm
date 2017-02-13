@@ -12,6 +12,7 @@ public class Main {
     public static int MAP[][] = new int[101][101];
     public static int N;
     public static int M;
+    public static int VISITED[][] = new int[101][101];
     public static Queue<Vertex> queue = new LinkedList<>();
     public static Vertex start;
     public static Vertex end;
@@ -57,19 +58,50 @@ public class Main {
 
         start = new Vertex(0, 0, 1);
         queue.add(start);
-        end = new Vertex(N, M, 0);
-        bfs();
+        end = new Vertex(N - 1, M - 1, 0);
+        Vertex result = bfs();
+        if (result != null) {
+            System.out.println(result.cnt);
+        }
     }
 
     public static Vertex bfs() {
         while (!queue.isEmpty()) {
             Vertex v = queue.poll();
+            if (v.equals(end)) {
+                return v;
+            }
+            if (isSafe(v.x - 1, v.y) && VISITED[v.x - 1][v.y] == 0) {
+                VISITED[v.x - 1][v.y] = 1;
+                queue.add(new Vertex(v.x - 1, v.y, v.cnt + 1));
+            }
+            if (isSafe(v.x + 1, v.y) && VISITED[v.x + 1][v.y] == 0) {
+                VISITED[v.x + 1][v.y] = 1;
+                queue.add(new Vertex(v.x + 1, v.y, v.cnt + 1));
+            }
+            if (isSafe(v.x, v.y - 1) && VISITED[v.x][v.y - 1] == 0) {
+                VISITED[v.x][v.y - 1] = 1;
+                queue.add(new Vertex(v.x, v.y - 1, v.cnt + 1));
+            }
+            if (isSafe(v.x, v.y + 1) && VISITED[v.x][v.y + 1] == 0) {
+                VISITED[v.x][v.y + 1] = 1;
+                queue.add(new Vertex(v.x, v.y + 1, v.cnt + 1));
+            }
         }
         return null;
     }
 
     public static boolean isSafe(int x, int y) {
-        return false;
+        if (x < 0 || x >= N) {
+            return false;
+        }
+        if (y < 0 || y >= M) {
+            return false;
+        }
+        if (MAP[x][y] == 0) {
+            return false;
+        }
+        return true;
     }
 
 }
