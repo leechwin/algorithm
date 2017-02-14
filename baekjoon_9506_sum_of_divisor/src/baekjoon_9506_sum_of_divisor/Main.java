@@ -8,9 +8,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-//6 = 1 + 2 + 3
-//12 is NOT perfect.
-//28 = 1 + 2 + 4 + 7 + 14
 public class Main {
 
     public static int N = 0;
