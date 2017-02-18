@@ -3,15 +3,14 @@ package baekjoon_7579_app;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    public static int N;
-    public static int M;
-    public static int APP[];
-    public static int COST[];
+    public static int N; // 1 ≤ N ≤ 100
+    public static int M; // 1 ≤ M ≤ 10,000,000
+    public static int MEM[]; // 1 ≤ m1, ..., mN ≤ 10,000,000
+    public static int COST[]; // 0 ≤ c1, ..., cN ≤ 100
     public static int DP[] = new int[10001];
 
     public static void main(String[] args) throws Exception {
@@ -24,19 +23,18 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        APP = new int[N];
+        MEM = new int[N];
         COST = new int[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            APP[i] = Integer.parseInt(st.nextToken());
+            MEM[i] = Integer.parseInt(st.nextToken());
         }
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             COST[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.fill(DP, -1);
         dp();
 
         for (int i = 0; i < 10001; i++) {
@@ -44,23 +42,21 @@ public class Main {
                 System.out.println(i);
                 break;
             }
-
         }
     }
 
+    // V(COST) = MAX( V(COST), V(COST - COST[i]) + MEM[i] )
     public static void dp() {
-        DP[0] = 0;
+        int cost_sum = 0;
+        for (int i = 0; i < COST.length; i++) {
+            cost_sum += COST[i];
+        }
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < 10; j++) {
-                if (DP[j] != -1) {
-                    if (DP[j + COST[i]] == -1) {
-                        DP[j + COST[i]] = DP[j] + APP[i];
-                    } else if (DP[j + COST[i]] > DP[j] + APP[i]) {
-                        DP[j + COST[i]] = DP[j] + APP[i];
-                    }
+            for (int j = cost_sum; j >= COST[i]; j--) {
+                if (DP[j] < DP[j - COST[i]] + MEM[i]) {
+                    DP[j] = DP[j - COST[i]] + MEM[i];
                 }
             }
-
         }
     }
 
