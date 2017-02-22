@@ -1,4 +1,4 @@
-package baekjoon_10211_maximum_subarray;
+package jungol_1836_maximum_subarry;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -7,7 +7,6 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    public static int T;
     public static int N;
     public static int NUMBER[];
 
@@ -18,25 +17,21 @@ public class Main {
         InputStreamReader isr = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(isr);
         StringTokenizer st = new StringTokenizer(br.readLine());
-        T = Integer.parseInt(st.nextToken());
-        for (int i = 0; i < T; i++) {
-            st = new StringTokenizer(br.readLine());
-            N = Integer.parseInt(st.nextToken());
-            NUMBER = new int[N];
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                NUMBER[j] = Integer.parseInt(st.nextToken());
-            }
-            System.out.println(solve());
+        N = Integer.parseInt(st.nextToken());
+        NUMBER = new int[N];
+        st = new StringTokenizer(br.readLine());
+        for (int j = 0; j < N; j++) {
+            NUMBER[j] = Integer.parseInt(st.nextToken());
         }
+        System.out.println(solve());
     }
 
     public static int solve() {
-        int cur_sum = -1000;
+        int cur_sum = -100;
         int cur_s = 0;
         int cur_e = 0;
 
-        int max_sum = -1000;
+        int max_sum = -100;
         int max_s = 0;
         int max_e = 0;
         for (int s = 0; s < N; s++) {
