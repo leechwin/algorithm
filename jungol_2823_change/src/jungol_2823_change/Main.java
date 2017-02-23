@@ -1,4 +1,4 @@
-package baekjoon_5585_change;
+package jungol_2823_change;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -20,7 +20,14 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         M = Integer.parseInt(st.nextToken());
 
-        int result = solve(1000 - M);
+        int cnt = M / 10000;
+        if (M % 10000 != 0) {
+            cnt++;
+        }
+        int remain = (10000 * cnt) - M;
+        System.out.print(cnt + " ");
+
+        int result = solve(remain);
         if (result != 0) {
             System.out.println(-1);
         } else {
