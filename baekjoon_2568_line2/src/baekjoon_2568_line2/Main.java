@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -15,6 +14,7 @@ public class Main {
     public static List<Line> lists = new ArrayList<Line>();
     public static int MAX_LIS;
 
+    // unused
     public static ArrayList<Line> binary_search_list = new ArrayList<Line>();
 
     static class Line implements Comparable<Line> {
@@ -48,58 +48,14 @@ public class Main {
         }
 
         Collections.sort(lists);
-        // LIS();
-        solve();
-        System.out.println();
-    }
-
-    private static void solve() {
-        // TODO Auto-generated method stub
-        binary_search_list.add(lists.get(0));
-        for (int i = 1; i < N; i++) {
-            Line lastLine = binary_search_list.get(binary_search_list.size() - 1);
-            Line currentLine = lists.get(i);
-            if (lastLine.b < currentLine.b) {
-                binary_search_list.add(currentLine);
-            } else {
-                int index = BinarySearch(0, binary_search_list.size() - 1, currentLine.b);
-                binary_search_list.set(index, currentLine);
-            }
-        }
-        for (Iterator iterator = binary_search_list.iterator(); iterator.hasNext();) {
-            Line line = (Line) iterator.next();
-            lists.remove(line);
-        }
-        System.out.println(lists.size());
-        for (Iterator iterator = lists.iterator(); iterator.hasNext();) {
-            Line line = (Line) iterator.next();
-            System.out.println(line.a);
-        }
-    }
-
-    /**
-     * O Nlog(N)
-     */
-    private static int BinarySearch(int start, int end, int num) {
+        LIS();
+        // solve();
         // FIXME: http://www.jungol.co.kr/theme/jungol/reinfo.php?sid=1793898
-        if (start >= end) {
-            return start;
-        }
-
-        int mid = start + end / 2;
-        if (binary_search_list.get(mid).b == num) {
-            return mid;
-        } else if (binary_search_list.get(mid).b > num) {
-            return BinarySearch(start, mid - 1, num);
-        } else {
-            return BinarySearch(mid + 1, end, num);
-        }
     }
 
     /**
      * O(N^2)
      */
-    @SuppressWarnings("unused")
     private static void LIS() {
         for (int i = 0; i < N; i++) {
             Line line = lists.get(i);
@@ -139,5 +95,46 @@ public class Main {
             System.out.println(temp.get(i).a);
         }
     }
+
+    /*
+    // O Nlog(N)
+    private static void solve() {
+        binary_search_list.add(lists.get(0));
+        for (int i = 1; i < N; i++) {
+            Line lastLine = binary_search_list.get(binary_search_list.size() - 1);
+            Line currentLine = lists.get(i);
+            if (lastLine.b < currentLine.b) {
+                binary_search_list.add(currentLine);
+            } else {
+                int index = BinarySearch(0, binary_search_list.size() - 1, currentLine.b);
+                binary_search_list.set(index, currentLine);
+            }
+        }
+        for (Iterator iterator = binary_search_list.iterator(); iterator.hasNext();) {
+            Line line = (Line) iterator.next();
+            lists.remove(line);
+        }
+        System.out.println(lists.size());
+        // for (Iterator iterator = lists.iterator(); iterator.hasNext();) {
+        // Line line = (Line) iterator.next();
+        // System.out.println(line.a);
+        // }
+    }
+    
+    private static int BinarySearch(int start, int end, int num) {
+        if (start >= end) {
+            return start;
+        }
+    
+        int mid = (start + end) / 2;
+        if (binary_search_list.get(mid).b == num) {
+            return mid;
+        } else if (binary_search_list.get(mid).b > num) {
+            return BinarySearch(start, mid - 1, num);
+        } else {
+            return BinarySearch(mid + 1, end, num);
+        }
+    }
+    */
 
 }
