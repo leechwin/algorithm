@@ -19,11 +19,18 @@ public class Main {
         BufferedReader br = new BufferedReader(isr);
         StringTokenizer st = new StringTokenizer(br.readLine());
         C = Integer.parseInt(st.nextToken());
-        st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        HEIGHT = new int[N];
+        for (int i = 0; i < C; i++) {
+            st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken());
+            HEIGHT = new int[N];
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                HEIGHT[j] = Integer.parseInt(st.nextToken());
+            }
 
-        solve();
+            solve();
+        }
+
     }
 
     private static void solve() {
