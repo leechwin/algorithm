@@ -99,21 +99,25 @@ public class Main {
         }
 
         if (h != -1 && w != -1 && isPossible(h, w)) {
+            // case 1
             if (h + 1 < H && w - 1 >= 0 && MAP[h + 1][w] == 0 && MAP[h + 1][w - 1] == 0) {
                 MAP[h][w] = MAP[h + 1][w] = MAP[h + 1][w - 1] = 1;
                 dp();
                 MAP[h][w] = MAP[h + 1][w] = MAP[h + 1][w - 1] = 0;
             }
+            // case 2
             if (h + 1 < H && w + 1 < W && MAP[h + 1][w] == 0 && MAP[h + 1][w + 1] == 0) {
                 MAP[h][w] = MAP[h + 1][w] = MAP[h + 1][w + 1] = 1;
                 dp();
                 MAP[h][w] = MAP[h + 1][w] = MAP[h + 1][w + 1] = 0;
             }
+            // case 3
             if (h + 1 < H && w + 1 < W && MAP[h][w + 1] == 0 && MAP[h + 1][w] == 0) {
                 MAP[h][w] = MAP[h][w + 1] = MAP[h + 1][w] = 1;
                 dp();
                 MAP[h][w] = MAP[h][w + 1] = MAP[h + 1][w] = 0;
             }
+            // case 4
             if (h + 1 < H && w + 1 < W && MAP[h][w + 1] == 0 && MAP[h + 1][w + 1] == 0) {
                 MAP[h][w] = MAP[h][w + 1] = MAP[h + 1][w + 1] = 1;
                 dp();
