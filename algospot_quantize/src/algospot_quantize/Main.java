@@ -91,7 +91,7 @@ public class Main {
     }
 
     private static int rangeAverage(int a, int b) {
-        return (int) (0.5 + (double) rangeSum(a, b) / (b - a + 1));
+        return (int) Math.round((double) rangeSum(a, b) / (b - a + 1));
     }
 
     private static int dp(int idx, int s) {
