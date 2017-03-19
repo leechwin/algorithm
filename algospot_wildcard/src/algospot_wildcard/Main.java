@@ -3,6 +3,9 @@ package algospot_wildcard;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -36,8 +39,50 @@ public class Main {
     }
 
     private static void solve() {
-        // TODO Auto-generated method stub
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i < N; i++) {
+            if (dp(W, WORD[i])) {
+                list.add(WORD[i]);
+            }
+        }
 
+        // sort
+        Collections.sort(list);
+
+        // print
+        for (String word : list) {
+            System.out.println(word);
+        }
+    }
+
+    private static boolean dp(String w, String word) {
+        int pos = 0;
+        while (pos < w.length() && pos < word.length()) {
+            if (w.charAt(pos) == '?' || w.charAt(pos) == word.charAt(pos)) {
+                pos++;
+            } else {
+                break;
+            }
+        }
+
+        // solve to '?'
+        if (pos == w.length()) {
+            if (pos == word.length()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (w.charAt(pos) == '*') { // solve to '*'
+            String subString = w.substring(pos + 1);
+            for (int i = 0; pos + i <= word.length(); i++) {
+                // search matched case
+                if (dp(subString, word.substring(pos + i))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }
