@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -15,6 +17,7 @@ public class Main {
     public static int SIZE[] = new int[101];
     public static int REQ[] = new int[101];
     public static int CACHE[][] = new int[101][1001];
+    public static HashSet<Integer> PICKED = new HashSet<Integer>();
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
@@ -32,6 +35,8 @@ public class Main {
             for (int j = 0; j < 101; j++) {
                 Arrays.fill(CACHE[j], -1);
             }
+            PICKED.clear();
+
             st = new StringTokenizer(br.readLine());
             N = Integer.parseInt(st.nextToken());
             W = Integer.parseInt(st.nextToken());
@@ -41,7 +46,13 @@ public class Main {
                 SIZE[j] = Integer.parseInt(st.nextToken());
                 REQ[j] = Integer.parseInt(st.nextToken());
             }
-            System.out.println(solve(N - 1, W));
+            int maxReq = solve(N - 1, W);
+            int maxThings = PICKED.size();
+            System.out.printf("%d %d\n", maxReq, maxThings);
+            for (Iterator<Integer> iterator = PICKED.iterator(); iterator.hasNext();) {
+                int index = iterator.next();
+                System.out.println(NAME[index]);
+            }
         }
     }
 
@@ -56,7 +67,16 @@ public class Main {
         }
 
         if (w - SIZE[i] >= 0) {
-            CACHE[i][w] = Math.max(solve(i - 1, w), solve(i - 1, w - SIZE[i]) + REQ[i]);
+            int result1 = solve(i - 1, w);
+            int result2 = solve(i - 1, w - SIZE[i]) + REQ[i];
+            if (result1 < result2) {
+                CACHE[i][w] = result2;
+                PICKED.add(i);
+            } else {
+                CACHE[i][w] = result1;
+            }
+            // CACHE[i][w] = Math.max(solve(i - 1, w), solve(i - 1, w - SIZE[i])
+            // + REQ[i]);
         } else {
             CACHE[i][w] = solve(i - 1, w);
         }
