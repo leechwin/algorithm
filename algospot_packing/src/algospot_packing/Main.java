@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+// 344ms
 public class Main {
 
     public static int C;
@@ -21,6 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
+        // FileInputStream fis = new FileInputStream("input2.txt");
         System.setIn(fis);
 
         InputStreamReader isr = new InputStreamReader(System.in);
@@ -46,7 +48,8 @@ public class Main {
                 SIZE[j] = Integer.parseInt(st.nextToken());
                 REQ[j] = Integer.parseInt(st.nextToken());
             }
-            int maxReq = solve(N - 1, W);
+            int maxReq = knapsack(N - 1, W);
+            backtracking(N - 1, W);
             int maxThings = PICKED.size();
             System.out.printf("%d %d\n", maxReq, maxThings);
             for (Iterator<Integer> iterator = PICKED.iterator(); iterator.hasNext();) {
@@ -56,8 +59,8 @@ public class Main {
         }
     }
 
-    // V(i,w) == MAX( V(i-1, w), V(i-1, w-WI[i]) + CI[i))
-    private static int solve(int i, int w) {
+    // V(i,w) == MAX( V(i-1, w), V(i-1, w-WI[i]) + CI[i) )
+    private static int knapsack(int i, int w) {
         if (i < 0) {
             return 0;
         }
@@ -67,20 +70,26 @@ public class Main {
         }
 
         if (w - SIZE[i] >= 0) {
-            int result1 = solve(i - 1, w);
-            int result2 = solve(i - 1, w - SIZE[i]) + REQ[i];
-            if (result1 < result2) {
-                CACHE[i][w] = result2;
-                PICKED.add(i);
-            } else {
-                CACHE[i][w] = result1;
-            }
-            // CACHE[i][w] = Math.max(solve(i - 1, w), solve(i - 1, w - SIZE[i])
-            // + REQ[i]);
+            CACHE[i][w] = Math.max(knapsack(i - 1, w), knapsack(i - 1, w - SIZE[i]) + REQ[i]);
         } else {
-            CACHE[i][w] = solve(i - 1, w);
+            CACHE[i][w] = knapsack(i - 1, w);
         }
         return CACHE[i][w];
     }
 
+    // get item list
+    private static void backtracking(int i, int w) {
+        if (i == 0) {
+            if (SIZE[i] <= w) {
+                PICKED.add(i);
+            }
+            return;
+        }
+        if (CACHE[i][w] == CACHE[i - 1][w]) { // i item is not contain
+            backtracking(i - 1, w);
+        } else { // i item is contain
+            PICKED.add(i);
+            backtracking(i - 1, w - SIZE[i]);
+        }
+    }
 }
