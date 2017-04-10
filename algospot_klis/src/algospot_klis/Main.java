@@ -6,16 +6,18 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    public static int C;
-    public static int N, K;
-    public static int NUMBER[];
-    public static int LIS[];
-    public static int COUNTS[];
+    static int C;
+    static int N, K;
+    static int NUMBER[];
+    static int LIS[];
+    static long COUNT[];
+    static long MAX = 2000000001L;
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
@@ -36,53 +38,58 @@ public class Main {
             }
             LIS = new int[N + 1];
             Arrays.fill(LIS, -1);
-            COUNTS = new int[N + 1];
-            Arrays.fill(COUNTS, -1);
-            solve();
+
+            COUNT = new long[N + 1];
+            Arrays.fill(COUNT, -1);
+
+            lis(-1);
+            count(-1);
+
+            LinkedList<Integer> result = new LinkedList<Integer>();
+            reconstruct(-1, K - 1, result);
+
+            System.out.println(result.size());
+            for (Iterator<Integer> iterator = result.iterator(); iterator.hasNext();) {
+                int num = iterator.next();
+                System.out.printf(num + " ");
+            }
+            System.out.println();
         }
     }
 
-    private static void solve() {
-        int s = lis(-1);
-        int c = count(-1);
-        result.clear();
-        reconstruct(-1, K - 1);
-        System.out.println();
-    }
-
-    private static int lis(int start) {
-        if (LIS[start + 1] != -1) {
-            return LIS[start + 1];
+    private static int lis(int pos) {
+        if (LIS[pos + 1] != -1) {
+            return LIS[pos + 1];
         }
 
         int ret = 1;
-        for (int next = start + 1; next < N; next++) {
-            if (start == -1 || NUMBER[start] < NUMBER[next]) {
-                ret = Math.max(ret, lis(next) + 1);
+        for (int i = pos + 1; i < N; i++) {
+            if (pos == -1 || NUMBER[pos] < NUMBER[i]) {
+                ret = Math.max(ret, lis(i) + 1);
             }
         }
-        LIS[start + 1] = ret;
+        LIS[pos + 1] = ret;
         return ret;
     }
 
-    private static int count(int start) {
-        if (lis(start) == 1) {
+    private static long count(int pos) {
+        if (lis(pos) == 1) {
             return 1;
         }
-        if (COUNTS[start + 1] != -1) {
-            return COUNTS[start + 1];
+
+        if (COUNT[pos + 1] != -1) {
+            return COUNT[pos + 1];
         }
-        int ret = 0;
-        for (int next = start + 1; next < N; next++) {
-            if (start == -1 || NUMBER[start] < NUMBER[next] && lis(start) == lis(next) + 1) {
-                ret = (int) Math.min(Long.MAX_VALUE, (long) ret + count(next));
+
+        long ret = 0;
+        for (int i = pos + 1; i < N; i++) {
+            if (pos == -1 || NUMBER[pos] < NUMBER[i] && lis(pos) == lis(i) + 1) {
+                ret = Math.min(MAX, ret + count(i));
             }
         }
-        COUNTS[start + 1] = ret;
+        COUNT[pos + 1] = ret;
         return ret;
     }
-
-    public static LinkedList result = new LinkedList<>();
 
     static class Pair {
         public Pair(int num, int index) {
@@ -94,36 +101,32 @@ public class Main {
         public int index;
     }
 
-    public static void reconstruct(int start, int skip) {
+    public static void reconstruct(int start, int skip, LinkedList<Integer> result) {
         if (start != -1) {
-            result.addLast(NUMBER[start]);
+            result.add(NUMBER[start]);
         }
-        LinkedList<Pair> followers = new LinkedList<>();
+        LinkedList<Pair> followers = new LinkedList<Pair>();
         for (int i = start + 1; i < N; i++) {
-            if (start == -1 || NUMBER[start] < NUMBER[i] && lis(start) == lis(i) + 1) {
-                followers.addLast(new Pair(NUMBER[i], i));
+            if ((start == -1 || NUMBER[start] < NUMBER[i]) && lis(start) == lis(i) + 1) {
+                followers.add(new Pair(NUMBER[i], i));
             }
         }
         Collections.sort(followers, new Comparator<Pair>() {
             @Override
             public int compare(Pair arg0, Pair arg1) {
-                if (arg0.num > arg1.num) {
-                    return 1;
-                }
-                return -1;
+                return arg0.num - arg1.num;
             }
         });
 
         for (int i = 0; i < followers.size(); i++) {
             int idx = followers.get(i).index;
-            int cnt = count(idx);
+            int cnt = (int) count(idx);
             if (cnt <= skip) {
                 skip -= cnt;
             } else {
-                reconstruct(idx, skip);
+                reconstruct(idx, skip, result);
                 break;
             }
         }
     }
-
 }
