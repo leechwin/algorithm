@@ -113,8 +113,8 @@ public class Main {
         }
         Collections.sort(followers, new Comparator<Pair>() {
             @Override
-            public int compare(Pair arg0, Pair arg1) {
-                return arg0.num - arg1.num;
+            public int compare(Pair pair1, Pair pair2) {
+                return pair1.num - pair2.num;
             }
         });
 
