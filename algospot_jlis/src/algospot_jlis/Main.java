@@ -1,4 +1,4 @@
-package algorithm_jlis;
+package algospot_jlis;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
