@@ -40,7 +40,7 @@ public class Main {
             dfs(i);
         }
 
-        if (RESULT.isEmpty()) {
+        if (RESULT.isEmpty() || RESULT.size() != N) {
             System.out.println("IMPOSSIBLE");
         } else {
             for (int i = RESULT.size() - 1; i >= 0; i--) {
@@ -64,7 +64,7 @@ public class Main {
                 hasNext = true;
             }
         }
-        if (hasNext) {
+        if (hasNext || i == N - 1) {
             RESULT.add(WORD[i]);
         }
     }
