@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,7 +12,9 @@ public class Main {
     public static int C;
     public static int N;
     public static String WORD[];
-    public static int VISITED[];
+    public static int MAP[][] = new int[26][26];
+    public static int IN_DEGREE[] = new int[26];
+    public static int OUT_DEGREE[] = new int[26];
     public static ArrayList<String> RESULT = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
@@ -26,18 +29,25 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             N = Integer.parseInt(st.nextToken());
             WORD = new String[N];
-            VISITED = new int[N];
-            RESULT.clear();
             for (int j = 0; j < N; j++) {
                 WORD[j] = br.readLine();
             }
+
+            for (int j = 0; j < 26; j++) {
+                Arrays.fill(MAP[j], 0);
+            }
+            Arrays.fill(IN_DEGREE, 0);
+            Arrays.fill(OUT_DEGREE, 0);
+
+            RESULT.clear();
+
             solve();
         }
     }
 
     private static void solve() {
         for (int i = 0; i < N; i++) {
-            dfs(i);
+            makeGraph(i);
         }
 
         if (RESULT.isEmpty() || RESULT.size() != N) {
@@ -50,23 +60,13 @@ public class Main {
         }
     }
 
-    private static void dfs(int i) {
-        if (VISITED[i] == 1) {
-            return;
-        }
-        VISITED[i] = 1;
+    private static void makeGraph(int i) {
+        int start = WORD[i].charAt(0) - 'a';
+        int end = WORD[i].charAt(WORD[i].length() - 1) - 'a';
 
-        boolean hasNext = false;
-        char startChar = WORD[i].charAt(WORD[i].length() - 1);
-        for (int j = 0; j < N; j++) {
-            if (i != j && startChar == WORD[j].charAt(0)) {
-                dfs(j);
-                hasNext = true;
-            }
-        }
-        if (hasNext || i == N - 1) {
-            RESULT.add(WORD[i]);
-        }
+        MAP[start][end]++;
+        INDE
+
     }
 
 }
