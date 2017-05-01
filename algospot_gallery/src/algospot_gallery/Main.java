@@ -3,7 +3,7 @@ package algospot_gallery;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -12,13 +12,14 @@ public class Main {
     public static int C;
     public static int G;
     public static int H;
-    public static LinkedList<Integer> MAP[];
-    public static int VISITED[];
-    public static int DEGREE[];
+    public static LinkedList<Integer> ADJ[];
+    public static boolean VISITED[];
 
-    public static ArrayList<Integer> RESULT;
-    public static int COUNT;
-    public static int INSTALLED[];
+    public static int UNWATCHED = 0;
+    public static int WATCHED = 1;
+    public static int INSTALLED = 2;
+
+    public static int INSTALLED_COUNT;
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
@@ -33,20 +34,23 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             G = Integer.parseInt(st.nextToken());
             H = Integer.parseInt(st.nextToken());
-            VISITED = new int[G];
-            DEGREE = new int[G];
-            MAP = new LinkedList[G];
-            RESULT = new ArrayList<Integer>();
-            INSTALLED = new int[G];
-            COUNT = 0;
+            VISITED = new boolean[G];
+            Arrays.fill(VISITED, false);
+            ADJ = new LinkedList[G];
+            INSTALLED_COUNT = 0;
             for (int j = 0; j < H; j++) {
                 st = new StringTokenizer(br.readLine());
                 int start = Integer.parseInt(st.nextToken());
                 int end = Integer.parseInt(st.nextToken());
-                if (MAP[start] == null) {
-                    MAP[start] = new LinkedList<Integer>();
+                // 무방향 그래프 주의 (2번째 test case = 2)
+                if (ADJ[start] == null) {
+                    ADJ[start] = new LinkedList<Integer>();
                 }
-                MAP[start].addLast(end);
+                ADJ[start].addLast(end);
+                if (ADJ[end] == null) {
+                    ADJ[end] = new LinkedList<Integer>();
+                }
+                ADJ[end].addLast(start);
             }
             solve();
         }
@@ -54,36 +58,33 @@ public class Main {
 
     private static void solve() {
         for (int i = 0; i < G; i++) {
-            if (VISITED[i] == 0) {
-                dfs(i);
+            if (VISITED[i] == false && dfs(i) == UNWATCHED) {
+                INSTALLED_COUNT++;
             }
         }
-        // 자식이 있으면 설치
-        // 부모가 없으면 설치
-        for (int i = RESULT.size() - 1; i >= 0; i--) {
-            if (MAP[RESULT.get(i)] != null && INSTALLED[RESULT.get(i)] == 0) {
-                INSTALLED[RESULT.get(i)] = 1;
-                COUNT++;
-            } else if (DEGREE[RESULT.get(i)] == 0 && INSTALLED[RESULT.get(i)] == 0) {
-                INSTALLED[RESULT.get(i)] = 1;
-                COUNT++;
-            }
-        }
-        System.out.println(COUNT);
+        System.out.println(INSTALLED_COUNT);
     }
 
-    private static void dfs(int g) {
-        if (VISITED[g] == 0) {
-            VISITED[g] = 1;
-            if (MAP[g] != null) {
-                for (int i = 0; i < MAP[g].size(); i++) {
-                    dfs(MAP[g].get(i));
-                    DEGREE[g]++;
-                    DEGREE[MAP[g].get(i)]++;
+    private static int dfs(int here) {
+        VISITED[here] = true;
+        int childeren[] = { 0, 0, 0 };
+        if (ADJ[here] != null) {
+            for (int i = 0; i < ADJ[here].size(); i++) {
+                int there = ADJ[here].get(i);
+                if (VISITED[there] == false) {
+                    childeren[dfs(there)]++;
                 }
             }
-            RESULT.add(g);
         }
-    }
 
+        if (childeren[UNWATCHED] > 0) {
+            ++INSTALLED_COUNT;
+            return INSTALLED;
+        }
+
+        if (childeren[INSTALLED] > 0) {
+            return WATCHED;
+        }
+        return UNWATCHED;
+    }
 }
