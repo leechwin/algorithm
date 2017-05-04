@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class Main {
+public class Main2 {
 
     public static int N;
 
@@ -31,62 +31,50 @@ public class Main {
                 list.add(Integer.parseInt(st.nextToken()));
             }
 
-            toSort = new HashMap<>();
-            preCalc(list.size());
-            int result = solve(list);
+            int result = bfs(list);
             System.out.println(result);
         }
     }
 
-    public static Map<LinkedList<Integer>, Integer> toSort;
+    private static void preCalc(int n) {
 
-    private static int solve(LinkedList<Integer> perm) {
-        int n = perm.size();
-        LinkedList<Integer> fixed = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            int smaller = 0;
-            for (int j = 0; j < n; j++) {
-                if (perm.get(j) < perm.get(i)) {
-                    smaller++;
-                }
-            }
-            fixed.add(i, smaller);
-        }
-        return toSort.get(fixed);
     }
 
-    private static void preCalc(int n) {
-        LinkedList<Integer> perm = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            perm.addLast(i);
-        }
+    private static int bfs(LinkedList<Integer> perm) {
+        int size = perm.size();
+        LinkedList<Integer> sorted = (LinkedList<Integer>) perm.clone();
+        Collections.sort(sorted);
+
         LinkedList<LinkedList<Integer>> queue = new LinkedList<>();
+        Map<LinkedList<Integer>, Integer> distance = new HashMap<>();
         queue.push(perm);
-        toSort.put(perm, 0);
-
-        // LinkedList<Integer> perm = (LinkedList<Integer>) prePerm.clone();
-
-        // Map<LinkedList<Integer>, Integer> distance = new HashMap<>();
+        distance.put(perm, 0);
 
         while (!queue.isEmpty()) {
             LinkedList<Integer> here = queue.removeFirst();
-            int cost = toSort.get(here);
+            int cost = distance.get(here);
+            // 정렬된 답과 비교
+            if (here.equals(sorted)) {
+                return cost;
+            }
 
-            for (int i = 0; i < n; i++) {
-                for (int j = i + 2; j <= n; j++) {
+            for (int i = 0; i < size; i++) {
+                for (int j = i + 2; j <= size; j++) {
                     List<Integer> subList = here.subList(i, j);
                     // 구간 변형
                     Collections.reverse(subList);
-                    if (toSort.get(here) == null) {
+                    if (distance.get(here) == null || distance.get(here) == 0) {
                         LinkedList<Integer> there = (LinkedList<Integer>) here.clone();
-                        toSort.put(there, cost + 1);
+                        distance.put(there, cost + 1);
                         queue.addLast(there);
                     }
                     // 원상복구
                     Collections.reverse(subList);
                 }
             }
+
         }
+        return -1;
     }
 
 }
