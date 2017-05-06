@@ -23,6 +23,12 @@ public class Main {
         BufferedReader br = new BufferedReader(isr);
         StringTokenizer st = new StringTokenizer(br.readLine());
         int C = Integer.parseInt(st.nextToken());
+
+        // 수열의 길이는 최고 8이기때문에 각 크기별 정렬값을 미리 BFS로 계산
+        for (int j = 1; j <= 8; j++) {
+            preCalc(j);
+        }
+
         for (int i = 0; i < C; i++) {
             st = new StringTokenizer(br.readLine());
             N = Integer.parseInt(st.nextToken());
@@ -32,10 +38,6 @@ public class Main {
                 list.add(Integer.parseInt(st.nextToken()));
             }
 
-            // 수열의 길이는 최고 8이기때문에 각 크기별 정렬값을 미리 BFS로 계산
-            for (int j = 1; j <= 8; j++) {
-                preCalc(j);
-            }
             int result = solve(list);
             System.out.println(result);
         }
