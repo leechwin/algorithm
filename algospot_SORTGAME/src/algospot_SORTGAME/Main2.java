@@ -36,10 +36,6 @@ public class Main2 {
         }
     }
 
-    private static void preCalc(int n) {
-
-    }
-
     private static int bfs(LinkedList<Integer> perm) {
         int size = perm.size();
         LinkedList<Integer> sorted = (LinkedList<Integer>) perm.clone();

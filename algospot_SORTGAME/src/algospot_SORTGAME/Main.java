@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 public class Main {
 
     public static int N;
+    public static Map<LinkedList<Integer>, Integer> toSort = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
@@ -31,14 +32,14 @@ public class Main {
                 list.add(Integer.parseInt(st.nextToken()));
             }
 
-            toSort = new HashMap<>();
-            preCalc(list.size());
+            // 수열의 길이는 최고 8이기때문에 각 크기별 정렬값을 미리 BFS로 계산
+            for (int j = 1; j <= 8; j++) {
+                preCalc(j);
+            }
             int result = solve(list);
             System.out.println(result);
         }
     }
-
-    public static Map<LinkedList<Integer>, Integer> toSort;
 
     private static int solve(LinkedList<Integer> perm) {
         int n = perm.size();
@@ -63,10 +64,6 @@ public class Main {
         LinkedList<LinkedList<Integer>> queue = new LinkedList<>();
         queue.push(perm);
         toSort.put(perm, 0);
-
-        // LinkedList<Integer> perm = (LinkedList<Integer>) prePerm.clone();
-
-        // Map<LinkedList<Integer>, Integer> distance = new HashMap<>();
 
         while (!queue.isEmpty()) {
             LinkedList<Integer> here = queue.removeFirst();
