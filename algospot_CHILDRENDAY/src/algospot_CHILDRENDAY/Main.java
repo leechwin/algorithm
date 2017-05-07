@@ -62,7 +62,7 @@ public class Main {
                 if (parent[there] == -1) {
                     parent[there] = here;
                     choice[there] = D.charAt(i) - '0';
-                    queue.push(there);
+                    queue.addLast(there);
                 }
             }
         }
@@ -74,11 +74,12 @@ public class Main {
         String ret = "";
         int here = N + M;
         while (parent[here] != here) {
-            ret += ('0' + choice[here]);
+            ret += choice[here];
             here = parent[here];
         }
 
-        return ret;
+        String reverse = new StringBuffer(ret).reverse().toString();
+        return reverse;
     }
 
 }
