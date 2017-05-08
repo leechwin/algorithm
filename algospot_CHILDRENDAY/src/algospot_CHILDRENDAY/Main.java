@@ -42,7 +42,9 @@ public class Main {
         return there % n;
     }
 
+    // digits에 속한 숫자들만으로 구성되고 C mod n == m인 최소의 C를 찾음
     private static String solve() {
+        // 간선의 번호를 오름차순으로 정렬해 두면 사전순으로 가장 앞에 있는 경로를 찾을 수 있다
         char[] chars = D.toCharArray();
         Arrays.sort(chars);
         D = String.valueOf(chars);
@@ -71,6 +73,7 @@ public class Main {
             return "IMPOSSIBLE";
         }
 
+        // 부모로 가는 연결을 따라가면서 C를 계산
         String ret = "";
         int here = N + M;
         while (parent[here] != here) {
