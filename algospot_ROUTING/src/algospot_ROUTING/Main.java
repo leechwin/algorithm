@@ -50,13 +50,15 @@ public class Main {
                 }
                 ADJ[end].add(new Pair(start, v));
             }
-            solve();
+
+            dijkstra();
+
             System.out.printf("%.10f\n", DIST[N - 1]);
         }
 
     }
 
-    private static void solve() {
+    private static void dijkstra() {
         DIST[0] = 1;
         PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
         pq.offer(new Pair(0, 1));
