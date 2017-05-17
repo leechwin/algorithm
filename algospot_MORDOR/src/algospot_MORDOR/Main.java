@@ -42,12 +42,12 @@ public class Main {
 
     }
 
-    // Double len = Math.pow(2, log2(N) + 2) - 1;
-    // tree = new MordorMinMax[len.intValue()];
-    // public static int log2(int x) {
-    // Double result = Math.log(x) / Math.log(2);
-    // return result.intValue();
-    // }
+    public static int getHeight(int x) {
+        Double result = Math.log(x) / Math.log(2.0);
+        result = Math.ceil(result);
+        Double len = Math.pow(2, result + 1) - 1;
+        return len.intValue();
+    }
 
     static class RMQ {
         public int n;
@@ -55,18 +55,18 @@ public class Main {
 
         public RMQ() {
             n = N;
-            range = new Level[N * 4];// FIXME: calc for size
+            range = new Level[getHeight(N)];
             init(0, N - 1, 1);
         }
 
-        private Level init(int left, int right, int node) {
-            if (left == right) {
-                return range[node] = new Level(H[left], H[left]);
+        private Level init(int nodeLeft, int nodeRight, int node) {
+            if (nodeLeft == nodeRight) {
+                return range[node] = new Level(H[nodeLeft], H[nodeLeft]);
             }
 
-            int mid = (left + right) / 2;
-            Level leftLevel = init(left, mid, node * 2);
-            Level rightLevel = init(mid + 1, right, node * 2 + 1);
+            int mid = (nodeLeft + nodeRight) / 2;
+            Level leftLevel = init(nodeLeft, mid, node * 2);
+            Level rightLevel = init(mid + 1, nodeRight, node * 2 + 1);
             return range[node] = new Level(Math.max(leftLevel.high, rightLevel.high), Math.min(leftLevel.low, rightLevel.low));
         }
 
