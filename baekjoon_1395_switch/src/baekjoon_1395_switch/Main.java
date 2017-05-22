@@ -64,6 +64,7 @@ public class Main {
             if (lazy[node]) {
                 range[node] = (nodeRight - nodeLeft + 1) - range[node];
                 if (nodeLeft != nodeRight) {
+                    // lazy propagation
                     lazy[node * 2] = !lazy[node * 2];
                     lazy[node * 2 + 1] = !lazy[node * 2 + 1];
                 }
@@ -79,6 +80,7 @@ public class Main {
             if (left <= nodeLeft && nodeRight <= right) {
                 range[node] = (nodeRight - nodeLeft + 1) - range[node];
                 if (nodeLeft != nodeRight) {
+                    // diff propagation
                     lazy[node * 2] = !lazy[node * 2];
                     lazy[node * 2 + 1] = !lazy[node * 2 + 1];
                 }
@@ -86,7 +88,6 @@ public class Main {
             }
             /*
             if (nodeLeft == nodeRight) {
-                // TODO: apply lazy update
                 range[node] = (nodeRight - nodeLeft + 1) - range[node];
                 return;
             }
