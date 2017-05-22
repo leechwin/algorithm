@@ -60,20 +60,37 @@ public class Main {
             Arrays.fill(lazy, false);
         }
 
-        private void lazyUpdate(int left, int right, int node) {
-            // TODO
+        private void lazyUpdate(int node, int nodeLeft, int nodeRight) {
+            if (lazy[node]) {
+                range[node] = (nodeRight - nodeLeft + 1) - range[node];
+                if (nodeLeft != nodeRight) {
+                    lazy[node * 2] = !lazy[node * 2];
+                    lazy[node * 2 + 1] = !lazy[node * 2 + 1];
+                }
+                lazy[node] = false;
+            }
         }
 
         private void update(int left, int right, int node, int nodeLeft, int nodeRight) {
+            lazyUpdate(node, nodeLeft, nodeRight);
             if (right < nodeLeft || nodeRight < left) {
                 return;
             }
-            // if (left <= nodeLeft && nodeRight <= right) {
+            if (left <= nodeLeft && nodeRight <= right) {
+                range[node] = (nodeRight - nodeLeft + 1) - range[node];
+                if (nodeLeft != nodeRight) {
+                    lazy[node * 2] = !lazy[node * 2];
+                    lazy[node * 2 + 1] = !lazy[node * 2 + 1];
+                }
+                return;
+            }
+            /*
             if (nodeLeft == nodeRight) {
                 // TODO: apply lazy update
                 range[node] = (nodeRight - nodeLeft + 1) - range[node];
                 return;
             }
+            */
             int mid = (nodeLeft + nodeRight) / 2;
             update(left, right, node * 2, nodeLeft, mid);
             update(left, right, node * 2 + 1, mid + 1, nodeRight);
@@ -85,7 +102,7 @@ public class Main {
         }
 
         private int query(int left, int right, int node, int nodeLeft, int nodeRight) {
-            lazyUpdate(left, right, node);
+            lazyUpdate(node, nodeLeft, nodeRight);
             if (right < nodeLeft || nodeRight < left) {
                 return 0;
             }
