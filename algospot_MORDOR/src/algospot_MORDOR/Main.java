@@ -1,8 +1,10 @@
 package algospot_MORDOR;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,6 +15,9 @@ public class Main {
     public static int H[];
 
     public static void main(String[] args) throws Exception {
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
+
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
 
@@ -36,17 +41,18 @@ public class Main {
                 int end = Integer.parseInt(st.nextToken());
 
                 Level result = rmq.query(start, end, 1);
-                System.out.println(result.high - result.low);
+                Integer str = result.high - result.low;
+                bw.write(str.toString());
+                bw.newLine();
             }
         }
-
+        bw.flush();
+        bw.close();
     }
 
-    public static int getHeight(int x) {
-        Double result = Math.log(x) / Math.log(2.0);
-        result = Math.ceil(result);
-        Double len = Math.pow(2, result + 1) - 1;
-        return len.intValue();
+    public static int getHeight(int n) {
+        Double H = Math.ceil(Math.log(n) / Math.log(2.0));
+        return 1 << (H.intValue() + 1);
     }
 
     static class RMQ {
@@ -67,7 +73,8 @@ public class Main {
             int mid = (nodeLeft + nodeRight) / 2;
             Level leftLevel = init(nodeLeft, mid, node * 2);
             Level rightLevel = init(mid + 1, nodeRight, node * 2 + 1);
-            return range[node] = new Level(Math.max(leftLevel.high, rightLevel.high), Math.min(leftLevel.low, rightLevel.low));
+            return range[node] = new Level(Math.max(leftLevel.high, rightLevel.high),
+                    Math.min(leftLevel.low, rightLevel.low));
         }
 
         private Level query(int left, int right, int node, int nodeLeft, int nodeRight) {
@@ -79,8 +86,8 @@ public class Main {
             }
 
             int mid = (nodeLeft + nodeRight) / 2;
-            Level leftLevel = query(left, right, node * 2, nodeLeft, mid);
-            Level rightLevel = query(left, right, node * 2 + 1, mid + 1, nodeRight);
+            Level leftLevel = query(left, right, node << 1, nodeLeft, mid);
+            Level rightLevel = query(left, right, node << 1 | 1, mid + 1, nodeRight);
             return new Level(Math.max(leftLevel.high, rightLevel.high), Math.min(leftLevel.low, rightLevel.low));
         }
 
