@@ -97,7 +97,7 @@ public class Main {
         }
 
         private int query(int left, int right, int node, int nodeLeft, int nodeRight) {
-            if (right < nodeLeft || nodeRight < left) {
+            if (right < nodeLeft || nodeRight < left || range[node] == 0) {
                 return 0;
             }
             if (left <= nodeLeft && nodeRight <= right) {
