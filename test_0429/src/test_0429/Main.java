@@ -79,17 +79,17 @@ public class Main {
             if (right < nodeLeft || nodeRight < left) {
                 return;
             }
-            if (left <= nodeLeft && nodeRight <= right) {
-                range[node] = 0;
-                if (nodeLeft != nodeRight) {
-                    range[node * 2] = range[node * 2 + 1] = 0;
-                }
+            if (range[node] == 0) {
                 return;
             }
-            int mid = (nodeLeft + nodeRight) / 2;
-            update(left, right, node * 2, nodeLeft, mid);
-            update(left, right, node * 2 + 1, mid + 1, nodeRight);
-            range[node] = range[node * 2] + range[node * 2 + 1];
+            if (nodeLeft == nodeRight) {
+                range[node] = 0;
+            } else {
+                int mid = (nodeLeft + nodeRight) / 2;
+                update(left, right, node * 2, nodeLeft, mid);
+                update(left, right, node * 2 + 1, mid + 1, nodeRight);
+                range[node] = range[node * 2] + range[node * 2 + 1];
+            }
         }
 
         public void update(int left, int right, int node) {
@@ -97,7 +97,10 @@ public class Main {
         }
 
         private int query(int left, int right, int node, int nodeLeft, int nodeRight) {
-            if (right < nodeLeft || nodeRight < left || range[node] == 0) {
+            if (right < nodeLeft || nodeRight < left) {
+                return 0;
+            }
+            if (range[node] == 0) {
                 return 0;
             }
             if (left <= nodeLeft && nodeRight <= right) {
