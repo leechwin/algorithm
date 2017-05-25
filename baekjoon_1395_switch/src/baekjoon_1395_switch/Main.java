@@ -1,8 +1,10 @@
 package baekjoon_1395_switch;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -12,6 +14,9 @@ public class Main {
     public static int M;
 
     public static void main(String[] args) throws Exception {
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
+
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
 
@@ -31,10 +36,13 @@ public class Main {
                 rmq.update(start - 1, end - 1, 1);
             } else {
                 // query
-                int result = rmq.query(start - 1, end - 1, 1);
-                System.out.println(result);
+                Integer result = rmq.query(start - 1, end - 1, 1);
+                bw.write(result.toString());
+                bw.newLine();
             }
         }
+        bw.flush();
+        bw.close();
     }
 
     static class RMQ {
@@ -65,8 +73,8 @@ public class Main {
                 range[node] = (nodeRight - nodeLeft + 1) - range[node];
                 if (nodeLeft != nodeRight) {
                     // lazy propagation
-                    lazy[node * 2] = !lazy[node * 2];
-                    lazy[node * 2 + 1] = !lazy[node * 2 + 1];
+                    lazy[node << 1] = !lazy[node << 1];
+                    lazy[node << 1 | 1] = !lazy[node << 1 | 1];
                 }
                 lazy[node] = false;
             }
@@ -81,21 +89,19 @@ public class Main {
                 range[node] = (nodeRight - nodeLeft + 1) - range[node];
                 if (nodeLeft != nodeRight) {
                     // diff propagation
-                    lazy[node * 2] = !lazy[node * 2];
-                    lazy[node * 2 + 1] = !lazy[node * 2 + 1];
+                    lazy[node << 1] = !lazy[node << 1];
+                    lazy[node << 1 | 1] = !lazy[node << 1 | 1];
                 }
                 return;
             }
             /*
-            if (nodeLeft == nodeRight) {
-                range[node] = (nodeRight - nodeLeft + 1) - range[node];
-                return;
-            }
-            */
+             * if (nodeLeft == nodeRight) { range[node] = (nodeRight - nodeLeft
+             * + 1) - range[node]; return; }
+             */
             int mid = (nodeLeft + nodeRight) / 2;
-            update(left, right, node * 2, nodeLeft, mid);
-            update(left, right, node * 2 + 1, mid + 1, nodeRight);
-            range[node] = range[node * 2] + range[node * 2 + 1];
+            update(left, right, node << 1, nodeLeft, mid);
+            update(left, right, node << 1 | 1, mid + 1, nodeRight);
+            range[node] = range[node << 1] + range[node << 1 | 1];
         }
 
         public void update(int left, int right, int node) {
@@ -112,8 +118,8 @@ public class Main {
             }
 
             int mid = (nodeLeft + nodeRight) / 2;
-            int leftQuery = query(left, right, node * 2, nodeLeft, mid);
-            int rightQuery = query(left, right, node * 2 + 1, mid + 1, nodeRight);
+            int leftQuery = query(left, right, node << 1, nodeLeft, mid);
+            int rightQuery = query(left, right, node << 1 | 1, mid + 1, nodeRight);
             return leftQuery + rightQuery;
         }
 
