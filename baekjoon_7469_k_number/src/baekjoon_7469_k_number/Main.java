@@ -52,7 +52,6 @@ public class Main {
 
                 if (low == K) {
                     answer = mid;
-                    break;
                 }
 
                 if (low < K) {
