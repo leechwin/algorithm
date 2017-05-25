@@ -1,10 +1,11 @@
 package baekjoon_7469_k_number;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -15,6 +16,9 @@ public class Main {
     public static int arr[];
 
     public static void main(String[] args) throws Exception {
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
+
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
 
@@ -34,9 +38,76 @@ public class Main {
             I = Integer.parseInt(st.nextToken());
             J = Integer.parseInt(st.nextToken());
             K = Integer.parseInt(st.nextToken());
-            ArrayList<Integer> result = rmq.query(I - 1, J - 1, 1);
-            System.out.println(result.get(K - 1));
+            ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+            rmq.query(result, I - 1, J - 1, 1);
+
+            int leftVal = rmq.range[1].get(0);
+            int rightVal = rmq.range[1].get(N - 1);
+            int mid = 0;
+            Integer answer = 0;
+            while (leftVal <= rightVal) {
+                mid = (leftVal + rightVal) / 2;
+
+                int low = parameticSearch(result, mid, K);
+
+                if (low == K) {
+                    answer = mid;
+                    break;
+                }
+
+                if (low < K) {
+                    leftVal = mid + 1;
+                } else {
+                    rightVal = mid - 1;
+                }
+            }
+            bw.write(answer.toString());
+            bw.newLine();
         }
+        bw.flush();
+        bw.close();
+    }
+
+    private static int parameticSearch(ArrayList<ArrayList<Integer>> result, int mid, int k) {
+        int low = 0;
+        for (ArrayList<Integer> list : result) {
+            low += binarySearch(list, 0, list.size() - 1, mid);
+
+            if (low > k) {
+                break;
+            }
+        }
+        return low;
+    }
+
+    private static int binarySearch(ArrayList<Integer> arr, int left, int right, int value) {
+        if (value < arr.get(left)) {
+            return 0;
+        }
+
+        if (arr.get(right) < value) {
+            return right + 1;
+        }
+
+        int mid = 0;
+        while (left <= right) {
+            mid = (left + right) / 2;
+
+            if (arr.get(mid) == value) {
+                return mid + 1;
+            }
+
+            if (arr.get(mid) < value) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        if (arr.get(mid) < value) {
+            return mid + 1;
+        }
+        return mid;
     }
 
     static class RMQ {
@@ -65,36 +136,54 @@ public class Main {
             int mid = (nodeLeft + nodeRight) / 2;
             ArrayList<Integer> leftInit = init(node * 2, nodeLeft, mid);
             ArrayList<Integer> rightInit = init(node * 2 + 1, mid + 1, nodeRight);
+
+            // merge sort
             ArrayList<Integer> merged = new ArrayList<Integer>();
-            merged.addAll(leftInit);
-            merged.addAll(rightInit);
-            Collections.sort(merged);
+            int leftI = 0;
+            int rightI = 0;
+            while (leftI < leftInit.size()) {
+                int leftVal = leftInit.get(leftI);
+                if (rightI < rightInit.size()) {
+                    // compare with right
+                    int rightVal = rightInit.get(rightI);
+                    if (leftVal < rightVal) {
+                        merged.add(leftVal);
+                        leftI++;
+                    } else {
+                        merged.add(rightVal);
+                        rightI++;
+                    }
+                } else {
+                    // add left
+                    merged.add(leftVal);
+                    leftI++;
+                }
+            }
+            // add remained val
+            while (rightI < rightInit.size()) {
+                merged.add(rightInit.get(rightI));
+                rightI++;
+            }
+
             return range[node] = merged;
         }
 
-        private ArrayList<Integer> query(int left, int right, int node, int nodeLeft, int nodeRight) {
+        private void query(ArrayList<ArrayList<Integer>> result, int left, int right, int node, int nodeLeft,
+                int nodeRight) {
             if (right < nodeLeft || nodeRight < left) {
-                return null;
+                return;
             }
             if (left <= nodeLeft && nodeRight <= right) {
-                return range[node];
+                result.add(range[node]);
+                return;
             }
             int mid = (nodeLeft + nodeRight) / 2;
-            ArrayList<Integer> leftQuery = query(left, right, node * 2, nodeLeft, mid);
-            ArrayList<Integer> rightQuery = query(left, right, node * 2 + 1, mid + 1, nodeRight);
-            ArrayList<Integer> merged = new ArrayList<Integer>();
-            if (leftQuery != null) {
-                merged.addAll(leftQuery);
-            }
-            if (rightQuery != null) {
-                merged.addAll(rightQuery);
-            }
-            Collections.sort(merged);
-            return merged;
+            query(result, left, right, node * 2, nodeLeft, mid);
+            query(result, left, right, node * 2 + 1, mid + 1, nodeRight);
         }
 
-        public ArrayList<Integer> query(int left, int right, int node) {
-            return query(left, right, node, 0, n - 1);
+        public void query(ArrayList<ArrayList<Integer>> result, int left, int right, int node) {
+            query(result, left, right, node, 0, n - 1);
         }
     }
 
