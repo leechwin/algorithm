@@ -38,9 +38,12 @@ public class Main {
             I = Integer.parseInt(st.nextToken());
             J = Integer.parseInt(st.nextToken());
             K = Integer.parseInt(st.nextToken());
+
+            // 구간의 정렬된 리스트를 모두 수집
             ArrayList<ArrayList<Integer>> result = new ArrayList<>();
             rmq.query(result, I - 1, J - 1, 1);
 
+            // 리스트들중에 K번째인 숫자를 찾는다.
             int leftVal = rmq.range[1].get(0);
             int rightVal = rmq.range[1].get(N - 1);
             int mid = 0;
@@ -48,13 +51,12 @@ public class Main {
             while (leftVal <= rightVal) {
                 mid = (leftVal + rightVal) / 2;
 
-                int low = parameticSearch(result, mid, K);
-
-                if (low == K) {
+                int lowCount = parameticSearch(result, mid, K);
+                if (lowCount == K) {
                     answer = mid;
                 }
 
-                if (low < K) {
+                if (lowCount < K) {
                     leftVal = mid + 1;
                 } else {
                     rightVal = mid - 1;
@@ -68,22 +70,24 @@ public class Main {
     }
 
     private static int parameticSearch(ArrayList<ArrayList<Integer>> result, int mid, int k) {
-        int low = 0;
+        int lowCount = 0;
         for (ArrayList<Integer> list : result) {
-            low += binarySearch(list, 0, list.size() - 1, mid);
-
-            if (low > k) {
+            // 임시값 mid 보다 작은 숫자들의 갯수를 찾는다.
+            lowCount += binarySearch(list, 0, list.size() - 1, mid);
+            if (lowCount > k) {
                 break;
             }
         }
-        return low;
+        return lowCount;
     }
 
     private static int binarySearch(ArrayList<Integer> arr, int left, int right, int value) {
+        // value가 리스트의 최소값보다 작다면 0
         if (value < arr.get(left)) {
             return 0;
         }
 
+        // value가 리스트의 최대값보다 크다면 리스트의 길이는 value 보다 작다
         if (arr.get(right) < value) {
             return right + 1;
         }
@@ -92,6 +96,7 @@ public class Main {
         while (left <= right) {
             mid = (left + right) / 2;
 
+            // value와 매칭되는 리스트값을 찾았을 경우
             if (arr.get(mid) == value) {
                 return mid + 1;
             }
