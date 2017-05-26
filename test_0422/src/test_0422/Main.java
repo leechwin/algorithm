@@ -36,7 +36,7 @@ public class Main {
                 NUMBER[j] = Integer.parseInt(st.nextToken());
             }
 
-            MAX_COUNT = K - L;;
+            MAX_COUNT = K - L;
             System.out.println("#" + (i + 1) + " " + solve());
         }
         long endTime = System.currentTimeMillis();
