@@ -58,13 +58,14 @@ public class Main {
                 b = Integer.parseInt(st.nextToken());
                 int u = locInTrip[a];
                 int v = locInTrip[b];
-                int lca;
+                int lca; // 공통 조상
                 if (u > v) {
                     lca = serial2no[rmq.query(v, u, 1)];
                 } else {
                     lca = serial2no[rmq.query(u, v, 1)];
                 }
 
+                // 촌수 = a depth + b depth - (2 * 공통조상 depth)
                 Integer result = depth[a] + depth[b] - 2 * depth[lca];
                 bw.write(result.toString());
                 bw.newLine();
@@ -115,7 +116,7 @@ public class Main {
         public RMQ(ArrayList<Integer> arr) {
             trip = arr;
             n = arr.size();
-            range = new int[getSize(n)];
+            range = new int[getSize(n)]; // trip 구간중 가장 작은 값을 저장(LCA: 최소 공통 조상)
             init(1, 0, n - 1);
         }
 
