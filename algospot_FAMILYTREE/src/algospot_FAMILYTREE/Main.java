@@ -49,6 +49,7 @@ public class Main {
             depth = new int[N];
             nextSerial = 0;
 
+            // trip = 2 * N - 1
             ArrayList<Integer> trip = new ArrayList<Integer>();
             dfs(0, 0, trip);
             RMQ rmq = new RMQ(trip);
@@ -56,6 +57,9 @@ public class Main {
                 st = new StringTokenizer(br.readLine());
                 a = Integer.parseInt(st.nextToken());
                 b = Integer.parseInt(st.nextToken());
+
+                // a 에서 b 로 가는 경로 계산
+                // depth[u] - depth[LCA(u,v)] + depth[v] - depth[LCA(u,v)] == depth[u] + depth[v] - (2 * depth[LCA(u,v)]);
                 int u = locInTrip[a];
                 int v = locInTrip[b];
                 int lca; // 공통 조상
@@ -64,8 +68,6 @@ public class Main {
                 } else {
                     lca = serial2no[rmq.query(u, v, 1)];
                 }
-
-                // 촌수 = a depth + b depth - (2 * 공통조상 depth)
                 Integer result = depth[a] + depth[b] - 2 * depth[lca];
                 bw.write(result.toString());
                 bw.newLine();
@@ -79,12 +81,9 @@ public class Main {
     public static int no2serial[];
     public static int serial2no[];
 
-    // 각 노드가 trip에 처음 나타나는 위치
-    public static int locInTrip[];
-    // 각 노드의 깊이
-    public static int depth[];
-    // 다음 일련번호
-    public static int nextSerial;
+    public static int locInTrip[]; // 각 노드가 trip에 처음 나타나는 위치
+    public static int depth[]; // 각 노드의 깊이
+    public static int nextSerial; // 다음 일련번호
 
     // 깊이가 d인 노드 here 이하를 전위 탐색
     private static void dfs(int here, int d, ArrayList<Integer> trip) {
@@ -108,6 +107,7 @@ public class Main {
         }
     }
 
+    // Range Minimum Query
     static class RMQ {
         int n;
         int range[];
@@ -116,7 +116,7 @@ public class Main {
         public RMQ(ArrayList<Integer> arr) {
             trip = arr;
             n = arr.size();
-            range = new int[getSize(n)]; // trip 구간중 가장 작은 값을 저장(LCA: 최소 공통 조상)
+            range = new int[getSize(n)]; // trip 구간중 가장 작은 값을 저장(Least Common Ancestor: 최소 공통 조상)
             init(1, 0, n - 1);
         }
 
