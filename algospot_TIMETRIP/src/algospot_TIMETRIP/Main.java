@@ -1,8 +1,10 @@
 package algospot_TIMETRIP;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
@@ -13,10 +15,15 @@ public class Main {
     public static int V; // 은하계수 V(2 <= V <= 100
     public static int W; // 웜홀의수 W(0 <= W <= 1000)
 
-    public static ArrayList<Vertex> ADJ[] = new ArrayList[101];
+    public static int INF = 987654321;
+    public static int M = 98765432;
+    public static ArrayList<Vertex> ADJ[];
     public static boolean reachable[][] = new boolean[101][101];
 
     public static void main(String[] args) throws Exception {
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
+
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
 
@@ -24,18 +31,17 @@ public class Main {
         BufferedReader br = new BufferedReader(isr);
         StringTokenizer st = new StringTokenizer(br.readLine());
         C = Integer.parseInt(st.nextToken());
-        for (int j = 0; j < 101; j++) {
-            ADJ[j] = new ArrayList<>();
-        }
         for (int i = 0; i < C; i++) {
             st = new StringTokenizer(br.readLine());
             V = Integer.parseInt(st.nextToken());
             W = Integer.parseInt(st.nextToken());
-            for (int j = 0; j < 101; j++) {
-                ADJ[j].clear();
-                Arrays.fill(reachable[j], false);
+
+            ADJ = new ArrayList[V];
+            for (int j = 0; j < V; j++) {
+                ADJ[j] = new ArrayList<>();
             }
-            for (int j = 0; j < 101; j++) {
+            for (int j = 0; j < V; j++) {
+                Arrays.fill(reachable[j], false);
                 reachable[j][j] = true;
             }
 
@@ -48,47 +54,51 @@ public class Main {
                 reachable[a][b] = true;
             }
 
-            for (int m = 0; m < V; m++) {
-                for (int j = 0; j < V; j++) {
-                    for (int k = 0; k < ADJ.length; k++) {
-                        if (reachable[j][m] && reachable[m][k]) {
-                            reachable[j][k] = true;
-                        }
-                    }
-                }
-            }
-
-            int resultFirst = bellmanFord();
-            if (resultFirst == Integer.MAX_VALUE) {
-                System.out.print("INFINITY");
-            } else if (resultFirst == Integer.MIN_VALUE) {
-                System.out.println("UNREACHABLE");
+            Integer resultFirst = bellmanFord();
+            if (resultFirst == -INF) {
+                bw.write("UNREACHABLE");
+                bw.newLine();
                 continue;
-            } else {
-                System.out.print(resultFirst);
             }
 
-            System.out.print(" ");
+            if (resultFirst == INF) {
+                bw.write("INFINITY ");
+            } else {
+                bw.write(resultFirst.toString() + " ");
+            }
 
-            for (int j = 0; j < W; j++) {
+            for (int j = 0; j < V; j++) {
                 for (int k = 0; k < ADJ[j].size(); k++) {
                     ADJ[j].get(k).cost = -ADJ[j].get(k).cost;
                 }
             }
-            int resultSecond = bellmanFord();
-            if (resultSecond == Integer.MAX_VALUE) {
-                System.out.println("INFINITY");
-            } else if (resultSecond == Integer.MIN_VALUE) {
-                System.out.println("UNREACHABLE");
+            Integer resultSecond = bellmanFord();
+            if (resultSecond == INF) {
+                bw.write("INFINITY");
+                bw.newLine();
             } else {
-                System.out.println(-resultSecond);
+                resultSecond = -resultSecond;
+                bw.write(resultSecond.toString());
+                bw.newLine();
             }
         }
+        bw.flush();
+        bw.close();
     }
 
     private static int bellmanFord() {
+        for (int m = 0; m < V; m++) {
+            for (int j = 0; j < V; j++) {
+                for (int k = 0; k < V; k++) {
+                    if (reachable[j][m] && reachable[m][k]) {
+                        reachable[j][k] = true;
+                    }
+                }
+            }
+        }
+
         int dist[] = new int[V];
-        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(dist, INF);
         dist[0] = 0;
 
         boolean updated = false;
@@ -101,11 +111,11 @@ public class Main {
                     int next = there.index;
                     int nextCost = dist[here] + there.cost;
                     if (dist[next] > nextCost) {
-                        dist[next] = nextCost;
-                        updated = true;
                         if (i == V - 1 && (reachable[next][1] || reachable[here][1])) {
                             cycle = true;
                         }
+                        dist[next] = nextCost;
+                        updated = true;
                     }
                 }
             }
@@ -113,11 +123,11 @@ public class Main {
                 break;
             }
         }
-        if (dist[1] >= Integer.MAX_VALUE) {
-            return Integer.MIN_VALUE; // UNREACHABLE
+        if (dist[1] >= INF - M) {
+            return -INF; // UNREACHABLE
         }
         if (cycle) {
-            return Integer.MAX_VALUE; // CYCLE
+            return INF; // CYCLE
         }
         return dist[1];
     }
@@ -131,4 +141,5 @@ public class Main {
             this.cost = cost;
         }
     }
+
 }
