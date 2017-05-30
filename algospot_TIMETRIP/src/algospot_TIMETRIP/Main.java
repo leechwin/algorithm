@@ -18,7 +18,6 @@ public class Main {
     public static int INF = 987654321;
     public static int M = 98765432;
     public static ArrayList<Vertex> ADJ[];
-    public static boolean reachable[][] = new boolean[101][101];
 
     public static void main(String[] args) throws Exception {
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
@@ -40,10 +39,6 @@ public class Main {
             for (int j = 0; j < V; j++) {
                 ADJ[j] = new ArrayList<>();
             }
-            for (int j = 0; j < V; j++) {
-                Arrays.fill(reachable[j], false);
-                reachable[j][j] = true;
-            }
 
             for (int j = 0; j < W; j++) {
                 st = new StringTokenizer(br.readLine());
@@ -51,81 +46,77 @@ public class Main {
                 int b = Integer.parseInt(st.nextToken());
                 int d = Integer.parseInt(st.nextToken());
                 ADJ[a].add(new Vertex(b, d));
-                reachable[a][b] = true;
             }
 
-            Integer resultFirst = bellmanFord();
-            if (resultFirst == -INF) {
-                bw.write("UNREACHABLE");
-                bw.newLine();
+            int min = bellmanFord();
+            if (min == -INF) {
+                bw.write("UNREACHABLE\n");
+                bw.flush();
                 continue;
             }
 
-            if (resultFirst == INF) {
+            if (min == INF) {
                 bw.write("INFINITY ");
             } else {
-                bw.write(resultFirst.toString() + " ");
+                bw.write(min + " ");
             }
+            bw.flush();
 
+            // reverse
             for (int j = 0; j < V; j++) {
                 for (int k = 0; k < ADJ[j].size(); k++) {
                     ADJ[j].get(k).cost = -ADJ[j].get(k).cost;
                 }
             }
-            Integer resultSecond = bellmanFord();
-            if (resultSecond == INF) {
-                bw.write("INFINITY");
-                bw.newLine();
+
+            int max = bellmanFord();
+            if (max == INF) {
+                bw.write("INFINITY\n");
             } else {
-                resultSecond = -resultSecond;
-                bw.write(resultSecond.toString());
-                bw.newLine();
+                bw.write(-max + "\n");
             }
+            bw.flush();
         }
-        bw.flush();
         bw.close();
+        br.close();
     }
 
     private static int bellmanFord() {
-        for (int m = 0; m < V; m++) {
-            for (int j = 0; j < V; j++) {
-                for (int k = 0; k < V; k++) {
-                    if (reachable[j][m] && reachable[m][k]) {
-                        reachable[j][k] = true;
-                    }
-                }
-            }
-        }
-
         int dist[] = new int[V];
         Arrays.fill(dist, INF);
         dist[0] = 0;
 
         boolean updated = false;
         boolean cycle = false;
+        // (N-1) + 1번의 루프. 마지막은 음의 싸이클 존재 여부 확인
         for (int i = 0; i < V; i++) {
             updated = false;
             for (int here = 0; here < V; here++) {
+                // N-1번의 루프에 걸쳐 각 정점이 i+1개 정점을 거쳐오는 최단경로 갱신
                 for (int j = 0; j < ADJ[here].size(); j++) {
-                    Vertex there = ADJ[here].get(j);
-                    int next = there.index;
-                    int nextCost = dist[here] + there.cost;
-                    if (dist[next] > nextCost) {
-                        if (i == V - 1 && (reachable[next][1] || reachable[here][1])) {
+                    Vertex vertex = ADJ[here].get(j);
+                    int there = vertex.index;
+                    int thereCost = dist[here] + vertex.cost;
+                    if (dist[there] > thereCost) {
+                        // N번째 루프에 값이 갱신되면 음의 싸이클이 존재
+                        if (i == V - 1) {
                             cycle = true;
                         }
-                        dist[next] = nextCost;
+                        dist[there] = thereCost;
                         updated = true;
                     }
                 }
             }
-            if (!updated) {
+            if (updated == false) {
                 break;
             }
         }
+
+        // 값이 변경되지 않았다면 도달하지 않음
         if (dist[1] >= INF - M) {
             return -INF; // UNREACHABLE
         }
+        // 사이클이 존재
         if (cycle) {
             return INF; // CYCLE
         }
