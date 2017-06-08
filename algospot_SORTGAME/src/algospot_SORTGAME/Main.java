@@ -1,8 +1,10 @@
 package algospot_SORTGAME;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,6 +18,9 @@ public class Main {
     public static Map<LinkedList<Integer>, Integer> toSort = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
+
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
 
@@ -39,8 +44,11 @@ public class Main {
             }
 
             int result = solve(list);
-            System.out.println(result);
+            bw.write(result + "\n");
+            bw.flush();
         }
+        bw.close();
+        br.close();
     }
 
     private static int solve(LinkedList<Integer> perm) {
