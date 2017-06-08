@@ -1,10 +1,11 @@
 package algospot_TPATH;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,9 +14,14 @@ public class Main {
     public static int N; // N <= 2000
     public static int M; // M <= 4000
     public static int p[];
-    public static PriorityQueue<Node> queue = new PriorityQueue<Node>();
+    public static Node edges[];
+    public static int weights[];
+    public static int INF = 987654321;
 
     public static void main(String[] args) throws Exception {
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
+
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
 
@@ -28,46 +34,47 @@ public class Main {
             N = Integer.parseInt(st.nextToken());
             M = Integer.parseInt(st.nextToken());
             p = new int[N];
-            Arrays.fill(p, -1);
-            queue.clear();
+            edges = new Node[M];
+            weights = new int[M];
             for (int j = 0; j < M; j++) {
                 st = new StringTokenizer(br.readLine());
                 int u = Integer.parseInt(st.nextToken());
                 int v = Integer.parseInt(st.nextToken());
                 int cost = Integer.parseInt(st.nextToken());
-                queue.offer(new Node(u, v, cost));
+                edges[j] = new Node(u, v, cost);
+                weights[j] = cost;
             }
-            System.out.println(mst());
+            Arrays.sort(weights);
+            Arrays.sort(edges);
+            bw.write(minWeightDifference() + "\n");
+            bw.flush();
         }
-
+        bw.close();
+        br.close();
     }
 
-    private static int mst() {
-        int min = -1;
-        int max = -1;
-        while (!queue.isEmpty()) {
-            Node node = queue.poll();
-            int u = node.u;
-            int v = node.v;
-            int cost = node.cost;
-            if (min == -1) {
-                min = cost;
-            }
-            if (max == -1) {
-                max = cost;
-            }
-            if (find(u) != find(v)) {
-                merge(u, v);
-                min = Math.min(min, cost);
-                max = Math.max(max, cost);
-            }
-            if (find(0) == find(N - 1)) {
-                break;
-            }
-
+    // 0과 V-1을 연결하는 경로 중 가중치의 상한과 하한 차이의 최소값을 계산한다.
+    public static int minWeightDifference() {
+        int ret = INF;
+        for (int i = 0; i < weights.length; i++) {
+            ret = Math.min(ret, kruskalMinUpperBound(i) - weights[i]);
         }
+        return ret;
+    }
 
-        return max - min;
+    public static int kruskalMinUpperBound(int low) {
+        // init for union-find
+        Arrays.fill(p, -1);
+        for (int i = 0; i < edges.length; i++) {
+            if (edges[i].cost < weights[low]) {
+                continue;
+            }
+            merge(edges[i].u, edges[i].v);
+            if (find(0) == find(N - 1)) {
+                return edges[i].cost;
+            }
+        }
+        return INF;
     }
 
     private static void merge(int u, int v) {
