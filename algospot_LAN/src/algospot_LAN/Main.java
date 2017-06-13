@@ -18,7 +18,7 @@ public class Main {
     public static int X[];
     public static int Y[];
     public static int p[];
-    public static PriorityQueue<Node> queue = new PriorityQueue<Node>();
+    public static PriorityQueue<Node> priorityQueue = new PriorityQueue<Node>();
 
     public static void main(String[] args) throws Exception {
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
@@ -39,7 +39,7 @@ public class Main {
             Y = new int[N];
             p = new int[N];
             Arrays.fill(p, -1);
-            queue.clear();
+            priorityQueue.clear();
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++) {
                 X[j] = Integer.parseInt(st.nextToken());
@@ -53,7 +53,7 @@ public class Main {
                 int u = Integer.parseInt(st.nextToken());
                 int v = Integer.parseInt(st.nextToken());
                 double cost = 0;
-                queue.add(new Node(u, v, cost));
+                priorityQueue.add(new Node(u, v, cost));
             }
 
             for (int j = 0; j < N; j++) {
@@ -71,7 +71,7 @@ public class Main {
                         y2 = Y[j];
                     }
                     double cost = dist(x2 - x1, y2 - y1);
-                    queue.offer(new Node(j, k, cost));
+                    priorityQueue.offer(new Node(j, k, cost));
                 }
             }
 
@@ -85,8 +85,8 @@ public class Main {
     private static double mst() {
         int cnt = 0;
         double result = 0;
-        while (!queue.isEmpty()) {
-            Node node = queue.poll();
+        while (!priorityQueue.isEmpty()) {
+            Node node = priorityQueue.poll();
             int u = node.u;
             int v = node.v;
             if (find(u) != find(v)) {
