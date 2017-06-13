@@ -1,4 +1,4 @@
-package baekjoon_11438;
+package baekjoon_11437_lca;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,18 +8,16 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class Main2 {
+public class Main {
 
     public static int N;
     public static int M;
     public static ArrayList<Integer> ADJ[];
-    public static int DEPTH[];
-    public static int PARENT[][];
+    public static int depth[];
+    public static boolean visited[];
+    public static int parent[][];
     public static int H;
 
-    /**
-     * LCA
-     */
     public static void main(String[] args) throws Exception {
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
         BufferedWriter bw = new BufferedWriter(osw);
@@ -32,10 +30,10 @@ public class Main2 {
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         ADJ = new ArrayList[N + 1];
-        for (int i = 0; i <= N; i++) {
+        for (int i = 0; i < N + 1; i++) {
             ADJ[i] = new ArrayList<Integer>();
         }
-        for (int i = 0; i < N - 1; i++) {
+        for (int i = 1; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
@@ -43,10 +41,12 @@ public class Main2 {
             ADJ[b].add(a);
         }
 
-        DEPTH = new int[N + 1];
-        DEPTH[0] = -1;
-        H = getSize(N);
-        PARENT = new int[N + 1][H + 1];
+        depth = new int[N + 1];
+        depth[0] = 0;
+        visited = new boolean[N + 1];
+        Double height = Math.floor(Math.log(N) / Math.log(2.0));
+        H = height.intValue() + 1;
+        parent = new int[N + 1][H + 1];
         makeTree(1, 0);
 
         st = new StringTokenizer(br.readLine());
@@ -55,8 +55,8 @@ public class Main2 {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            int result = lca(a, b);
-            bw.write(result + "\n");
+            int lca = lca(a, b);
+            bw.write(lca + "\n");
             bw.flush();
         }
         bw.close();
@@ -64,46 +64,46 @@ public class Main2 {
     }
 
     private static int lca(int a, int b) {
-        if (DEPTH[a] > DEPTH[b]) {
+        if (depth[a] > depth[b]) {
             return lca(b, a);
         }
-        if (DEPTH[a] != DEPTH[b]) {
+
+        if (depth[a] != depth[b]) {
             for (int i = H; i >= 0; i--) {
-                if (DEPTH[a] <= DEPTH[PARENT[b][i]]) {
-                    b = PARENT[b][i];
+                if (depth[a] <= depth[parent[b][i]]) {
+                    b = parent[b][i];
                 }
             }
         }
+
         int lca = a;
         if (a != b) {
             for (int i = H; i >= 0; i--) {
-                if (PARENT[a][i] != PARENT[b][i]) {
-                    a = PARENT[a][i];
-                    b = PARENT[b][i];
+                if (parent[a][i] != parent[b][i]) {
+                    a = parent[a][i];
+                    b = parent[b][i];
                 }
-                lca = PARENT[a][i];
+                lca = parent[a][i];
             }
         }
         return lca;
     }
 
-    private static int getSize(int n) {
-        Double height = Math.floor(Math.log(n) / Math.log(2.0));
-        return height.intValue() + 1;
-    }
+    private static void makeTree(int here, int pparent) {
+        depth[here] = depth[pparent] + 1;
+        parent[here][0] = pparent;
+        visited[here] = true;
 
-    private static void makeTree(int here, int parent) {
-        DEPTH[here] = DEPTH[parent] + 1;
-        PARENT[here][0] = parent;
-        for (int i = 1; i <= H; i++) {
-            PARENT[here][i] = PARENT[PARENT[here][i - 1]][i - 1];
+        for (int i = 1; i < H; i++) {
+            parent[here][i] = parent[parent[here][i - 1]][i - 1];
         }
 
         for (int i = 0; i < ADJ[here].size(); i++) {
             int there = ADJ[here].get(i);
-            if (there != parent) {
+            if (!visited[there]) {
                 makeTree(there, here);
             }
         }
     }
+
 }
