@@ -63,6 +63,7 @@ public class Main {
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             int lca = lca(a, b);
+            // x + y - (2 * lca)
             int result = cost[a] + cost[b] - (2 * cost[lca]);
             bw.write(result + "\n");
             bw.flush();
