@@ -32,6 +32,9 @@ public class Main {
             DIST = new double[N];
             Arrays.fill(DIST, Double.MAX_VALUE);
             ADJ = new LinkedList[N];
+            for (int j = 0; j < N; j++) {
+                ADJ[j] = new LinkedList<Pair>();
+            }
 
             for (int j = 0; j < M; j++) {
                 st = new StringTokenizer(br.readLine());
@@ -40,14 +43,7 @@ public class Main {
                 double v = Double.parseDouble(st.nextToken());
 
                 // 양방향그래프
-                if (ADJ[start] == null) {
-                    ADJ[start] = new LinkedList<Pair>();
-                }
                 ADJ[start].add(new Pair(end, v));
-
-                if (ADJ[end] == null) {
-                    ADJ[end] = new LinkedList<Pair>();
-                }
                 ADJ[end].add(new Pair(start, v));
             }
 
@@ -66,18 +62,18 @@ public class Main {
             Pair pair = pq.poll();
             int here = pair.here;
             double cost = pair.cost;
+
             if (DIST[here] < cost) {
                 continue;
             }
-            if (ADJ[here] != null) {
-                for (int i = 0; i < ADJ[here].size(); i++) {
-                    Pair next = ADJ[here].get(i);
-                    int there = next.here;
-                    double thereCost = cost * next.cost;
-                    if (DIST[there] > thereCost) {
-                        DIST[there] = thereCost;
-                        pq.offer(new Pair(there, thereCost));
-                    }
+
+            for (int i = 0; i < ADJ[here].size(); i++) {
+                Pair next = ADJ[here].get(i);
+                int there = next.here;
+                double thereCost = cost * next.cost;
+                if (DIST[there] > thereCost) {
+                    DIST[there] = thereCost;
+                    pq.offer(new Pair(there, thereCost));
                 }
             }
         }
