@@ -41,20 +41,16 @@ public class Main {
             Arrays.fill(DIST, Integer.MAX_VALUE);
 
             ADJ = new LinkedList[V + 1];
+            for (int j = 0; j <= V; j++) {
+                ADJ[j] = new LinkedList<>();
+            }
             for (int j = 0; j < E; j++) {
                 st = new StringTokenizer(br.readLine());
                 int start = Integer.parseInt(st.nextToken());
                 int end = Integer.parseInt(st.nextToken());
                 int cost = Integer.parseInt(st.nextToken());
 
-                if (ADJ[start] == null) {
-                    ADJ[start] = new LinkedList<>();
-                }
                 ADJ[start].add(new Vertex(end, cost));
-
-                if (ADJ[end] == null) {
-                    ADJ[end] = new LinkedList<>();
-                }
                 ADJ[end].add(new Vertex(start, cost));
             }
 
@@ -95,16 +91,13 @@ public class Main {
                 continue;
             }
 
-            if (ADJ[here] != null) {
-                for (int i = 0; i < ADJ[here].size(); i++) {
-                    Vertex thereVertex = ADJ[here].get(i);
-                    int there = thereVertex.here;
-                    int thereCost = cost + thereVertex.cost;
-                    if (DIST[there] > thereCost) {
-                        DIST[there] = thereCost;
-                        pq.offer(new Vertex(there, thereCost));
-                    }
-
+            for (int i = 0; i < ADJ[here].size(); i++) {
+                Vertex thereVertex = ADJ[here].get(i);
+                int there = thereVertex.here;
+                int thereCost = cost + thereVertex.cost;
+                if (DIST[there] > thereCost) {
+                    DIST[there] = thereCost;
+                    pq.offer(new Vertex(there, thereCost));
                 }
             }
         }
