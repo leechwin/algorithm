@@ -71,19 +71,20 @@ public class Main {
             }
 
             int result = 0;
-            for (int j = 0; j < N; j++) {
-                if (find(j) == j) {
-                    int en = enemy[j];
+            for (int root = 0; root < N; root++) {
+                // root가되는 node그룹을 모두 순회
+                if (find(root) == root) {
+                    int en = enemy[root];
                     // 같은 모임 쌍을 두 번 세지 않기 위해, enemy < node 인 경우만 카운트
-                    if (en > j) {
+                    if (en > root) {
                         continue;
                     }
                     if (en == -1) {
                         en = 0;
                     }
-                    int mySize = size[j];
-                    int enSize = size[en];
-                    result += Math.max(mySize, enSize);
+                    int mySize = size[root];
+                    int enemySize = size[en];
+                    result += Math.max(mySize, enemySize);
                 }
             }
             bw.write("MAX PARTY SIZE IS " + result + "\n");
@@ -125,15 +126,16 @@ public class Main {
         return true;
     }
 
-    public static int find(int a) {
-        if (parent[a] == a) {
-            return a;
+    public static int find(int n) {
+        if (parent[n] == n) {
+            return n;
         }
-        parent[a] = find(parent[a]);
-        return parent[a];
+        parent[n] = find(parent[n]);
+        return parent[n];
     }
 
     public static int merge(int u, int v) {
+        // 공집합의 경우
         if (u == -1 || v == -1) {
             return Math.max(u, v);
         }
@@ -152,6 +154,8 @@ public class Main {
             rank[v]++;
         }
         parent[u] = v;
+
+        // 부모사이즈를 갱신
         size[v] += size[u];
         return v;
     }
