@@ -74,6 +74,7 @@ public class Main {
             for (int j = 0; j < N; j++) {
                 if (find(j) == j) {
                     int en = enemy[j];
+                    // 같은 모임 쌍을 두 번 세지 않기 위해, enemy < node 인 경우만 카운트
                     if (en > j) {
                         continue;
                     }
@@ -94,10 +95,13 @@ public class Main {
     public static boolean ack(int u, int v) {
         u = find(u);
         v = find(v);
+        // 서로 적인 경우 모순
         if (enemy[u] == v) {
             return false;
         }
+
         int a = merge(u, v);
+        // 아군의 적은 나의 적
         int b = merge(enemy[u], enemy[v]);
         enemy[a] = b;
         if (b != -1) {
@@ -109,9 +113,11 @@ public class Main {
     public static boolean dis(int u, int v) {
         u = find(u);
         v = find(v);
+        // 같은편이면 모순
         if (u == v) {
             return false;
         }
+        // 적의 적은 아군
         int a = merge(u, enemy[v]);
         int b = merge(v, enemy[u]);
         enemy[a] = b;
@@ -136,6 +142,7 @@ public class Main {
         if (u == v) {
             return v;
         }
+        // 부모가될 v 가 더 크게 조정
         if (rank[u] > rank[v]) {
             int tmp = u;
             u = v;
