@@ -46,14 +46,14 @@ public class Main {
             Arrays.fill(size, 1);
 
             boolean isContradiction = false;
-            for (int j = 0; j < M; j++) {
+            for (int j = 1; j <= M; j++) {
                 st = new StringTokenizer(br.readLine());
                 String str = st.nextToken();
                 int u = Integer.parseInt(st.nextToken());
                 int v = Integer.parseInt(st.nextToken());
 
-                boolean valid = true;
-                if (valid && !isContradiction) {
+                if (!isContradiction) {
+                    boolean valid = true;
                     if (str.equals("ACK")) {
                         valid = ack(u, v);
                     } else {
@@ -61,7 +61,7 @@ public class Main {
                     }
                     if (!valid) {
                         isContradiction = true;
-                        bw.write("CONTRADICTION AT " + (j + 1) + "\n");
+                        bw.write("CONTRADICTION AT " + j + "\n");
                         bw.flush();
                     }
                 }
