@@ -18,7 +18,7 @@ public class Main {
     public static int X[] = new int[100];
     public static int Y[] = new int[100];
     public static int R[] = new int[100];
-    public static int longest;
+    public static int longest; // 리프-리프 경로의 길이
 
     public static void main(String[] args) throws Exception {
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
@@ -67,7 +67,10 @@ public class Main {
             return false;
 
         for (int i = 0; i < N; i++) {
-            if (i != parent && i != child && encloses(parent, i) && encloses(i, child)) {
+            if (i == parent && i == child) {
+                continue;
+            }
+            if (encloses(parent, i) && encloses(i, child)) {
                 return false;
             }
         }
@@ -97,8 +100,8 @@ public class Main {
     // root를 루트로하는 서브트리의 높이를 반환
     private static int height(TreeNode root) {
         ArrayList<Integer> heights = new ArrayList<Integer>();
-        for (int i = 0; i < root.children.size(); i++) {
-            heights.add(height(root.children.get(i)));
+        for (TreeNode child : root.children) {
+            heights.add(height(child));
         }
 
         if (heights.isEmpty()) {
@@ -107,11 +110,12 @@ public class Main {
 
         Collections.sort(heights);
 
-        // root를 최상위로 하는 경로를 고려
         if (heights.size() >= 2) {
+            // root를 최상위로 하는 리프-리프 값을 갱신
             longest = Math.max(longest, 2 + heights.get(heights.size() - 2) + heights.get(heights.size() - 1));
         }
 
+        // 높이
         return heights.get(heights.size() - 1) + 1;
     }
 
