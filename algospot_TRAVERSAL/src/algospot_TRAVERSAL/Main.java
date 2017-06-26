@@ -65,7 +65,7 @@ public class Main {
 
         // 후위 탐색 순서로 출력 (left -> right -> root)
 
-        // left 출력
+        // left 출력 (pre에서 root index(0)을 제외)
         printPostOrder(pre.subList(1, leftSize + 1), in.subList(0, leftSize));
 
         // right 출력
