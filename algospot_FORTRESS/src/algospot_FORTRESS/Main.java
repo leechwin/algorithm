@@ -7,8 +7,8 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    public static int C;
-    public static int N;
+    public static int C; // 1 <= C <= 100
+    public static int N; // 1 <= N <= 100
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
