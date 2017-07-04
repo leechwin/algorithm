@@ -1,17 +1,19 @@
-package algospot_NAMING;
+package algospot_PALINDROMIZE;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class Main {
 
+    public static int C;
     public static int pi[];
 
     public static void main(String[] args) throws Exception {
+
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
         BufferedWriter bw = new BufferedWriter(osw);
 
@@ -20,43 +22,48 @@ public class Main {
 
         InputStreamReader isr = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(isr);
-
-        String father = br.readLine();
-        String mother = br.readLine();
-        String S = father + mother;
-
-        pi = new int[S.length() + 1];
-        ArrayList<Integer> result = KMP(S);
-        for (int i = result.size() - 1; i >= 0; i--) {
-            bw.write(result.get(i) + " ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        C = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < C; i++) {
+            String S = br.readLine();
+            String reverse = new StringBuilder(S).reverse().toString();
+            pi = new int[S.length()];
+            int matched = maxOverlap(S, reverse);
+            int result = S.length() + S.length() - matched;
+            bw.write(result + "\n");
             bw.flush();
         }
 
-        bw.newLine();
-        bw.flush();
         bw.close();
         br.close();
     }
 
-    private static ArrayList<Integer> KMP(String s) {
-        getPartialMatch(s);
-        ArrayList<Integer> result = new ArrayList<Integer>();
-        int k = s.length();
-        while (k > 0) {
-            result.add(k);
-            // ex) ababbaba
-            // pi[7] = 3 "aba"
-            // pi[2] = 1 "a"
-            k = pi[k - 1];
+    private static int maxOverlap(String s, String reverse) {
+        getPartialMatch(reverse);
+
+        int n = s.length();
+        int m = reverse.length();
+        int begin = 0;
+        int matched = 0;
+        while (begin < n) {
+            if (matched < m && s.charAt(begin + matched) == reverse.charAt(matched)) {
+                matched++;
+                if (begin + matched == n) {
+                    return matched;
+                }
+            } else {
+                if (matched == 0) {
+                    begin++;
+                } else {
+                    begin += matched - pi[matched - 1];
+                    matched = pi[matched - 1];
+                }
+            }
         }
-        return result;
+        return 0;
     }
 
-    // N에서 자기 자신을 찾으면서 나타나는 부분일치를 이용해 pi[]를 계산
-    // pi[i] = N[..i]의 접미사도 되고 접두사도 되는 문자열의 최대 길이
     private static void getPartialMatch(String N) {
-        // KMP로 자기 자신을 찾는다
-        // N을 N에서 찾는다. beging=0이면 자기자신을 찾으므로 안됨
         int begin = 1;
         int matched = 0;
         int m = N.length();
