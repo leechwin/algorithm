@@ -15,9 +15,9 @@ public class Main {
     public static int M; // 1≤M≤100000
 
     public static int parent[];
-    public static int[] rank;
-    public static int[] enemy;
-    public static int[] size;
+    public static int rank[];
+    public static int enemy[];
+    public static int size[];
 
     public static void main(String[] args) throws Exception {
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
