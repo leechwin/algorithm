@@ -17,22 +17,6 @@ public class Main {
     // unused
     public static ArrayList<Line> binary_search_list = new ArrayList<Line>();
 
-    static class Line implements Comparable<Line> {
-        public int a;
-        public int b;
-        public int lis;
-
-        public Line(int a, int b) {
-            this.a = a;
-            this.b = b;
-        }
-
-        @Override
-        public int compareTo(Line line) {
-            return this.a > line.a ? 1 : -1;
-        }
-    }
-
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
@@ -96,45 +80,19 @@ public class Main {
         }
     }
 
-    /*
-    // O Nlog(N)
-    private static void solve() {
-        binary_search_list.add(lists.get(0));
-        for (int i = 1; i < N; i++) {
-            Line lastLine = binary_search_list.get(binary_search_list.size() - 1);
-            Line currentLine = lists.get(i);
-            if (lastLine.b < currentLine.b) {
-                binary_search_list.add(currentLine);
-            } else {
-                int index = BinarySearch(0, binary_search_list.size() - 1, currentLine.b);
-                binary_search_list.set(index, currentLine);
-            }
-        }
-        for (Iterator iterator = binary_search_list.iterator(); iterator.hasNext();) {
-            Line line = (Line) iterator.next();
-            lists.remove(line);
-        }
-        System.out.println(lists.size());
-        // for (Iterator iterator = lists.iterator(); iterator.hasNext();) {
-        // Line line = (Line) iterator.next();
-        // System.out.println(line.a);
-        // }
-    }
-    
-    private static int BinarySearch(int start, int end, int num) {
-        if (start >= end) {
-            return start;
-        }
-    
-        int mid = (start + end) / 2;
-        if (binary_search_list.get(mid).b == num) {
-            return mid;
-        } else if (binary_search_list.get(mid).b > num) {
-            return BinarySearch(start, mid - 1, num);
-        } else {
-            return BinarySearch(mid + 1, end, num);
-        }
-    }
-    */
+    static class Line implements Comparable<Line> {
+        public int a;
+        public int b;
+        public int lis;
 
+        public Line(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        @Override
+        public int compareTo(Line line) {
+            return this.a > line.a ? 1 : -1;
+        }
+    }
 }

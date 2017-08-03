@@ -35,14 +35,17 @@ public class Main {
         Collections.sort(lines);
         lis();
 
-        // 최장 증가 부분 수열을 구하면 제거해야할 전깃줄 갯수를 구할 수 있다.
-        // 전깃줄 갯수 - 최장 증가 부분 수열
         bw.write(N - MAX_CNT + "\n");
         bw.flush();
         bw.close();
         br.close();
     }
 
+    /*
+     * 최장 증가 부분 수열을 구하면 제거해야할 전깃줄 갯수를 구할 수 있다.
+     * 제거해야할 전깃줄 수 = 총 전깃줄 - 최장 증가 부분 수열
+     * O(N^2)
+     */
     public static void lis() {
         for (int i = 0; i < N; i++) {
             Line line = lines.get(i);
