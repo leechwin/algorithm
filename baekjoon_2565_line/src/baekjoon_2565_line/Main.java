@@ -35,6 +35,8 @@ public class Main {
         Collections.sort(lines);
         lis();
 
+        // 최장 증가 부분 수열을 구하면 제거해야할 전깃줄 갯수를 구할 수 있다.
+        // 전깃줄 갯수 - 최장 증가 부분 수열
         bw.write(N - MAX_CNT + "\n");
         bw.flush();
         bw.close();
