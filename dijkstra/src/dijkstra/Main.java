@@ -16,12 +16,13 @@ public class Main {
     public static int map[][];
 
     public static int dist[][];
-    public static boolean visited[][];
     public static int INF = 987654321;
 
     public static PriorityQueue<Node> pq = new PriorityQueue<Node>();
 
     public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
+
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
         BufferedWriter bw = new BufferedWriter(osw);
 
@@ -46,13 +47,17 @@ public class Main {
             for (int j = 0; j < N; j++) {
                 Arrays.fill(dist[j], INF);
             }
-            visited = new boolean[N][N];
 
             dijkstra();
 
             bw.write("#" + i + " " + dist[N - 1][N - 1] + "\n");
             bw.flush();
         }
+
+        long end = System.currentTimeMillis();
+        bw.write("time: " + ((end - start) / 1000.0) + " sec"); // time: 0.206 sec
+        bw.flush();
+
         bw.close();
         br.close();
     }
