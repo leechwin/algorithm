@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -13,9 +14,6 @@ public class Main {
     public static int N;
     public static List<Line> lists = new ArrayList<Line>();
     public static int MAX_LIS;
-
-    // unused
-    public static ArrayList<Line> binary_search_list = new ArrayList<Line>();
 
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
@@ -32,58 +30,51 @@ public class Main {
         }
 
         Collections.sort(lists);
-        LIS();
-        // solve();
+        int[] A = new int[N];
+        for (int i = 0; i < N; i++) {
+            A[i] = lists.get(i).b;
+        }
         // FIXME: http://www.jungol.co.kr/theme/jungol/reinfo.php?sid=1793898
+
+        int a = LISLength(A, N);
+        System.out.println();
     }
 
-    /**
-     * O(N^2)
-     */
-    private static void LIS() {
-        for (int i = 0; i < N; i++) {
-            Line line = lists.get(i);
-            line.lis = 1;
-            for (int j = 0; j < i; j++) {
-                Line pre = lists.get(j);
-                if (line.b > pre.b && line.lis < pre.lis + 1) {
-                    line.lis = pre.lis + 1;
-                    if (MAX_LIS < line.lis) {
-                        MAX_LIS = line.lis;
-                    }
-                }
-            }
-        }
-        // System.out.println(MAX_LIS);
+    public static int LISLength(int[] A, int size) {
+        int[] indexTable = new int[size];
+        int[] tailTable = new int[size];
+        int lisLength = 0; // always points empty slot
 
-        ArrayList<Line> temp = new ArrayList<Line>();
-        for (int i = N - 1; i >= 0; i--) {
-            Line line = lists.get(i);
-            if (line.lis == MAX_LIS) {
-                for (int j = i - 1; j >= 0; j--) {
-                    Line pre = lists.get(j);
-                    if (pre.b < line.b && pre.lis == line.lis - 1) {
-                        line = pre;
-                    } else {
-                        temp.add(pre);
-                    }
-                }
-                break;
+        // 초기값
+        tailTable[0] = A[0];
+        lisLength = 1;
+
+        for (int i = 1; i < size; i++) {
+            // 후보값이 LIS의 처음 값보다 작은지?
+            if (A[i] < tailTable[0]) {
+                tailTable[0] = A[i];
+                indexTable[0] = i;
+            }
+            // 후보값이 LIS의 마지막 값 보다 큰지?
+            else if (A[i] > tailTable[lisLength - 1]) {
+                tailTable[lisLength] = A[i];
+                indexTable[lisLength] = i;
+                lisLength++;
             } else {
-                temp.add(line);
+                // CeilIndex를 찾고 replace한다.
+                int idx1 = Arrays.binarySearch(tailTable, 0, lisLength, A[i]);
+                idx1 = idx1 < 0 ? -idx1 - 1 : idx1;
+                tailTable[idx1] = A[i];
+                indexTable[idx1] = i;
             }
         }
 
-        System.out.println(temp.size());
-        for (int i = temp.size() - 1; i >= 0; i--) {
-            System.out.println(temp.get(i).a);
-        }
+        return lisLength;
     }
 
     static class Line implements Comparable<Line> {
         public int a;
         public int b;
-        public int lis;
 
         public Line(int a, int b) {
             this.a = a;
@@ -91,8 +82,8 @@ public class Main {
         }
 
         @Override
-        public int compareTo(Line line) {
-            return this.a > line.a ? 1 : -1;
+        public int compareTo(Line other) {
+            return this.a > other.a ? 1 : -1;
         }
     }
 }
