@@ -68,7 +68,7 @@ public class Main {
 
         int next = Math.max(first, second) + 1;
         int ff = dp(next, second) + dist(first, next);
-        int ss = dp(first, next) + dist(next, second);
+        int ss = dp(first, next) + dist(second, next);
         return DP[first][second] = Math.min(ff, ss);
     }
 
@@ -79,7 +79,7 @@ public class Main {
 
         int next = Math.max(first, second) + 1;
         int ff = DP[next][second] + dist(first, next);
-        int ss = DP[first][next] + dist(next, second);
+        int ss = DP[first][next] + dist(second, next);
         if (ff < ss) {
             PATH.add(1);
             path(next, second);
