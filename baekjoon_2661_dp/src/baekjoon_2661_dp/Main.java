@@ -46,7 +46,7 @@ public class Main {
             if (str.length() - 2 * i < 0) {
                 break;
             }
-            if (str.substring(str.length() - i, str.length() - i + i)
+            if (str.substring(str.length() - i, str.length())
                     .equals(str.substring(str.length() - 2 * i, str.length() - 2 * i + i))) {
                 return false;
             }
