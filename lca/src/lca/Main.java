@@ -19,7 +19,7 @@ public class Main {
     public static Node nodes[];
 
     public static int H;
-    public static int parent[][];
+    public static int parent[];
     public static int depth[];
     public static boolean visited[];
     public static int result;
@@ -52,11 +52,10 @@ public class Main {
                 nodes[j] = new Node(j, parent, height);
             }
 
-            parent = new int[N + 1][1];
+            parent = new int[N + 1];
             depth = new int[N + 1];
             visited = new boolean[N + 1];
 
-            // calc
             makeTree(0, 0);
 
             // lca
@@ -95,12 +94,12 @@ public class Main {
         }
 
         while (depth[a] != depth[b]) {
-            b = parent[b][0];
+            b = parent[b];
         }
 
         while (a != b) {
-            a = parent[a][0];
-            b = parent[b][0];
+            a = parent[a];
+            b = parent[b];
         }
         return a;
     }
@@ -111,12 +110,9 @@ public class Main {
         } else {
             depth[here] = depth[pparent] + 1;
         }
-        parent[here][0] = pparent;
+        parent[here] = pparent;
         visited[here] = true;
 
-        for (int i = 1; i < H; i++) {
-            parent[here][i] = parent[parent[here][i - 1]][i - 1];
-        }
         for (int i = 0; i < ADJ[here].size(); i++) {
             Node there = ADJ[here].get(i);
             if (!visited[there.index]) {
