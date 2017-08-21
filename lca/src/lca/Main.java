@@ -1,34 +1,31 @@
 package lca;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
-//#1 180 160
-//#2 180 180
 public class Main {
 
     public static int T;
     public static int N; // (1 <= N <= 100,000)
     public static int E; // (1<= E <= 100,000)
     public static int K; // (1<= K <= 200)
-
-    public static ArrayList<Node> ADJ[];
     public static Node nodes[];
 
-    public static int H;
-    public static int parent[];
-    public static int depth[];
-    public static boolean visited[];
-    public static int result;
-
     public static void main(String[] args) throws Exception {
-        FileInputStream fis = new FileInputStream("input.txt");
+        FileInputStream fis = new FileInputStream("input2.txt");
         System.setIn(fis);
 
         long start = System.currentTimeMillis();
+
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
 
         InputStreamReader isr = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(isr);
@@ -38,28 +35,28 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             N = Integer.parseInt(st.nextToken());
             E = Integer.parseInt(st.nextToken());
-            ADJ = new ArrayList[N + 1];
             nodes = new Node[N + 1];
-            nodes[0] = new Node(0, 0, 0);
-            for (int j = 0; j <= N; j++) {
-                ADJ[j] = new ArrayList<>();
+            for (int j = 0; j < N + 1; j++) {
+                Node node = new Node();
+                node.index = j;
+                nodes[j] = node;
             }
+            nodes[0].parent = null;
+            nodes[0].depth = 0;
+
             for (int j = 1; j <= N; j++) {
                 st = new StringTokenizer(br.readLine());
                 int parent = Integer.parseInt(st.nextToken());
                 int height = Integer.parseInt(st.nextToken());
-                ADJ[parent].add(new Node(j, parent, height));
-                nodes[j] = new Node(j, parent, height);
+                nodes[j].height = height;
+                nodes[j].parent = nodes[parent];
+                nodes[j].parent.child.add(nodes[j]);
             }
 
-            parent = new int[N + 1];
-            depth = new int[N + 1];
-            visited = new boolean[N + 1];
-
-            makeTree(0, 0);
+            makeTree();
 
             // lca
-            System.out.print("#" + i + " ");
+            bw.write("#" + i);
             for (int j = 0; j < E; j++) {
                 st = new StringTokenizer(br.readLine());
                 K = Integer.parseInt(st.nextToken());
@@ -68,69 +65,53 @@ public class Main {
                     int b = Integer.parseInt(st.nextToken());
                     a = lca(a, b);
                 }
-                result = 0;
-                findHeight(a);
-                System.out.print(result + " ");
+                bw.write(" " + nodes[a].height);
             }
-            System.out.println();
+            bw.write("\n");
         }
 
         long end = System.currentTimeMillis();
-        System.out.println("time: " + ((end - start) / 1000.0) + " sec.");
-    }
-
-    private static void findHeight(int here) {
-        if (here == 0) {
-            return;
-        }
-        Node node = nodes[here];
-        result = Math.max(result, node.height);
-        findHeight(node.parent);
+        bw.write("time: " + ((end - start) / 1000.0) + " sec.");
+        bw.flush();
+        bw.close();
+        br.close();
     }
 
     private static int lca(int a, int b) {
-        if (depth[a] > depth[b]) {
-            return lca(b, a);
+        Node c1 = nodes[a];
+        Node c2 = nodes[b];
+        while (c1 != c2) {
+            if (c1.depth == c2.depth) {
+                c1 = c1.parent == null ? c1 : c1.parent;
+                c2 = c2.parent == null ? c2 : c2.parent;
+            } else if (c1.depth > c2.depth) {
+                c1 = c1.parent == null ? c1 : c1.parent;
+            } else {
+                c2 = c2.parent == null ? c2 : c2.parent;
+            }
         }
-
-        while (depth[a] != depth[b]) {
-            b = parent[b];
-        }
-
-        while (a != b) {
-            a = parent[a];
-            b = parent[b];
-        }
-        return a;
+        return c1.index;
     }
 
-    private static void makeTree(int here, int pparent) {
-        if (here == 0) {
-            depth[here] = 0;
-        } else {
-            depth[here] = depth[pparent] + 1;
-        }
-        parent[here] = pparent;
-        visited[here] = true;
-
-        for (int i = 0; i < ADJ[here].size(); i++) {
-            Node there = ADJ[here].get(i);
-            if (!visited[there.index]) {
-                makeTree(there.index, here);
+    private static void makeTree() {
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(nodes[0]);
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+            for (Node ch : node.child) {
+                ch.depth = node.depth + 1;
+                ch.height = Math.max(node.height, ch.height);
+                queue.add(ch);
             }
         }
     }
 
     static class Node {
         public int index;
-        public int parent;
         public int height;
-
-        public Node(int index, int parent, int height) {
-            this.index = index;
-            this.parent = parent;
-            this.height = height;
-        }
+        public int depth;
+        public Node parent;
+        public ArrayList<Node> child = new ArrayList<>();
     }
 
 }
