@@ -37,12 +37,12 @@ public class Main {
                 int num = Integer.parseInt(st.nextToken());
                 if (type == 1) {
                     // add
-                    rmq.update(num, num, 1, 1, 0, N - 1);
+                    rmq.update(num, 1, 1, 0, N - 1);
                 } else {
                     // query and remove
                     int result = rmq.query(num, 1, 0, N - 1);
                     bw.write(" " + result);
-                    rmq.update(num, num, -1, 1, 0, N - 1);
+                    rmq.update(num, -1, 1, 0, N - 1);
                 }
             }
             bw.write("\n");
@@ -69,18 +69,17 @@ public class Main {
             return 1 << (H.intValue() + 1);
         }
 
-        public void update(int left, int right, int diff, int node, int nodeLeft, int nodeRight) {
-            if (right < nodeLeft || nodeRight < left) {
+        public void update(int index, int diff, int node, int nodeLeft, int nodeRight) {
+            if (index < nodeLeft || nodeRight < index) {
                 return;
             }
-            if (left <= nodeLeft && nodeRight <= right) {
-                range[node] += diff;
-                return;
+            range[node] += diff;
+            if (nodeLeft != nodeRight) {
+                int mid = (nodeLeft + nodeRight) / 2;
+                update(index, diff, node * 2, nodeLeft, mid);
+                update(index, diff, node * 2 + 1, mid + 1, nodeRight);
+                range[node] = range[node * 2] + range[node * 2 + 1];
             }
-            int mid = (nodeLeft + nodeRight) / 2;
-            update(left, right, diff, node * 2, nodeLeft, mid);
-            update(left, right, diff, node * 2 + 1, mid + 1, nodeRight);
-            range[node] = range[node * 2] + range[node * 2 + 1];
         }
 
         public int query(int k, int node, int nodeLeft, int nodeRight) {
