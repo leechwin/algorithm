@@ -81,17 +81,17 @@ public class Main {
         queue.add(0);
 
         while (!queue.isEmpty()) {
-            int curr = queue.poll();
-            if (count[curr] > K + 1) {
+            int here = queue.poll();
+            if (count[here] > K + 1) {
                 return false;
             }
-            if (curr == N - 1) {
+            if (here == N - 1) {
                 return true;
             }
-            for (int i = 1; i < N; i++) {
-                if (count[i] == 0 && dist[curr][i] < m) {
-                    count[i] = count[curr] + 1;
-                    queue.add(i);
+            for (int there = 1; there < N; there++) {
+                if (count[there] == 0 && dist[here][there] < m) {
+                    count[there] = count[here] + 1;
+                    queue.add(there);
                 }
             }
         }
