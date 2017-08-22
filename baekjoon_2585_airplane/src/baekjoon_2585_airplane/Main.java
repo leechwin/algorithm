@@ -57,7 +57,7 @@ public class Main {
                 if (j < i) {
                     dist[i][j] = dist[j][i];
                 } else {
-                    dist[i][j] = (int) Math.sqrt((point[j][0] - point[i][0]) * (point[j][0] - point[i][0]) + (point[j][1] - point[i][1]) * (point[j][1] - point[i][1])) / 10;
+                    dist[i][j] = (int) Math.sqrt(Math.pow((point[j][0] - point[i][0]), 2) + Math.pow((point[j][1] - point[i][1]), 2)) / 10;
                 }
             }
         }
