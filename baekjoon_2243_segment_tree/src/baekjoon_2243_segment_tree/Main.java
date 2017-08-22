@@ -1,8 +1,10 @@
 package baekjoon_2243_segment_tree;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,6 +15,9 @@ public class Main {
     public static void main(String[] args) throws Exception {
         FileInputStream fis = new FileInputStream("input.txt");
         System.setIn(fis);
+
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        BufferedWriter bw = new BufferedWriter(osw);
 
         InputStreamReader isr = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(isr);
@@ -26,14 +31,18 @@ public class Main {
                 // query and remove
                 int k = Integer.parseInt(st.nextToken());
                 int num = rmq.query(k);
-                System.out.println(num);
-                rmq.updata(num, -1);
+                bw.write(num + "\n");
+                rmq.update(num, -1);
             } else {
                 // update
-                // int = Integer.parseInt(st.nextToken());
+                int k = Integer.parseInt(st.nextToken());
+                int n = Integer.parseInt(st.nextToken());
+                rmq.update(k, n);
             }
         }
 
+        bw.close();
+        br.close();
     }
 
     static class RMQ {
@@ -62,9 +71,10 @@ public class Main {
             int mid = (nodeLeft + nodeRight) / 2;
             update(index, diff, node * 2, nodeLeft, mid);
             update(index, diff, node * 2 + 1, mid + 1, nodeRight);
+            range[node] = range[node * 2] + range[node * 2 + 1];
         }
 
-        public void updata(int index, int diff) {
+        public void update(int index, int diff) {
             update(index, diff, 1, 0, n - 1);
         }
 
@@ -75,7 +85,7 @@ public class Main {
 
             int mid = (nodeLeft + nodeRight) / 2;
             int leftK = range[node * 2];
-            if (leftK <= k) {
+            if (leftK < k) {
                 // right node
                 return query(k - leftK, node * 2 + 1, mid + 1, nodeRight);
             } else {
