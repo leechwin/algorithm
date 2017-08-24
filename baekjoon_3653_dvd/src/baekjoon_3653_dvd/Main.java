@@ -62,7 +62,7 @@ public class Main {
         public int range[];
 
         public RMQ() {
-            this.n = N + M + 1;
+            this.n = N + M;
             this.range = new int[getSize(n)];
         }
 
