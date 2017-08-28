@@ -42,6 +42,7 @@ public class Main {
         System.out.println(result);
     }
 
+    // A섬, B섬, 다음섬
     private static int dp(int a, int b, int k) {
         if (DP[a][b] == -1) {
             if (k == N - 1) {
@@ -63,8 +64,9 @@ public class Main {
         return DP[a][b];
     }
 
-    // tracking
+    // 현재섬에서 다음섬으로 갈 수 있는가
     private static boolean distA(int a, int k) {
+        // 다음섬 <= 현재섬 + 현재섬 점프가능거리
         if (P[k] <= (P[a] + D[a])) {
             return true;
         } else {
@@ -72,9 +74,10 @@ public class Main {
         }
     }
 
-    // backtracking
+    // 다음섬에서 현재섬으로 올 수 있는가
     private static boolean distB(int b, int k) {
-        if (P[k] <= (P[b] + D[k])) {
+        // 다음섬 - 다음섬 점프가능거리 <= 현재섬
+        if (P[k] - D[k] <= P[b]) {
             return true;
         } else {
             return false;
