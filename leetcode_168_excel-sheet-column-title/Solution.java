@@ -16,3 +16,5 @@ class Solution {
         return sb.reverse().toString();
     }
 }
+
+// Ref: http://buttercola.blogspot.com/2015/08/leetcode-excel-sheet-column-title.html
