@@ -1,14 +1,24 @@
 class Solution {
-    public int titleToNumber(String s) {
-        char[] ss = s.toCharArray();
-
-        int sum = 0;
-        int pt = 0;
-        for (int i = ss.length - 1; i >= 0; i--) {
-            int charter = ((int) ss[i] - 64);
-            sum += Math.pow(26, pt) * charter;
-            pt++;
+    public void moveZeroes(int[] nums) {
+        int length = nums.length;
+        int i = 0;
+        int j = 0; // new array index
+        for (i = 0; i < length; i++) {
+            if (nums[i] != 0) {
+                nums[j] = nums[i];
+                j++;
+            }
         }
-        return sum;
+
+        if (j < length) {
+            while (j < length) {
+                // assign 0
+                nums[j++] = 0;
+            }
+        }
+
+        for (int k = 0; k < length; k++) {
+            System.out.print(nums[k] + " ");
+        }
     }
 }
