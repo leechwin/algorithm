@@ -4,7 +4,7 @@
  * @return {number[]}
  */
 var twoSum = function(nums, target) {
-    const map = {};
+    const map = [];
 
     for (let i = 0; i < nums.length; i++) {
         // key: number, value: index
